@@ -42,7 +42,6 @@ module.exports = {
     description: 'Plays a song or adds a song to the queue when a song is already playing',
     category: 'music',
     cooldown: 10,
-    testOnly: true,
     options: [
         {
             name: 'query',

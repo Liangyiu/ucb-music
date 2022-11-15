@@ -58,6 +58,7 @@ module.exports = {
                                                     message.delete();
                                                 }
                                                 catch (error) {
+                                                    console.log(error);
                                                 }
                                             }
                                         });

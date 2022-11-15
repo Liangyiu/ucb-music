@@ -39,11 +39,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var discord_js_1 = require("discord.js");
 module.exports = {
     name: 'interactionCreate',
-    /**
-     *
-     * @param {ButtonInteraction} interaction
-     * @param {Client} client
-     */
     execute: function (interaction, client) {
         var _a;
         return __awaiter(this, void 0, void 0, function () {

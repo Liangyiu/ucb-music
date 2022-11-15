@@ -9,7 +9,6 @@ module.exports = {
     category: 'music',
 
     cooldown: 10,
-    testOnly: true,
 
     async execute(interaction: CommandInteraction, client: UMClient) {
         const { guild } = interaction;

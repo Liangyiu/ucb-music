@@ -41,7 +41,6 @@ module.exports = {
     description: 'Skips the currently playing song',
     category: 'music',
     cooldown: 5,
-    testOnly: true,
     execute: function (interaction, client) {
         var _a;
         return __awaiter(this, void 0, void 0, function () {

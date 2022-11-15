@@ -6,7 +6,6 @@ module.exports = {
     name: 'ping',
     description: 'replies with pong',
     category: 'test',
-    testOnly: true,
 
     async execute(interaction: CommandInteraction, client: UMClient) {
         return await interaction.reply({

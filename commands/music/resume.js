@@ -41,7 +41,6 @@ module.exports = {
     description: 'Resumes playback',
     category: 'music',
     cooldown: 10,
-    testOnly: true,
     execute: function (interaction, client) {
         var _a;
         return __awaiter(this, void 0, void 0, function () {

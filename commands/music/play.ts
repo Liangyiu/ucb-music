@@ -8,7 +8,6 @@ module.exports = {
     category: 'music',
 
     cooldown: 10,
-    testOnly: true,
 
     options: [
         {

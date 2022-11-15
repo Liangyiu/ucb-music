@@ -40,7 +40,6 @@ module.exports = {
     name: 'ping',
     description: 'replies with pong',
     category: 'test',
-    testOnly: true,
     execute: function (interaction, client) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
