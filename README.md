@@ -1,6 +1,4 @@
 # UCB Music - A music bot template for discord
----
-
 ## How to get started
 
 1. Create a new Discord Application
