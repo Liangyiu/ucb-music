@@ -3,11 +3,7 @@ import UMClient from "../../interfaces/UMClient";
 
 module.exports = {
     name: 'interactionCreate',
-    /**
-     * 
-     * @param {ButtonInteraction} interaction 
-     * @param {Client} client 
-     */
+    
     async execute(interaction: CommandInteraction, client: UMClient) {
         const { guild, channel } = interaction;
         const member = interaction.member as GuildMember;

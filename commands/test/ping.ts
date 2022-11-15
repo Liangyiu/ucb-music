@@ -12,6 +12,6 @@ module.exports = {
         return await interaction.reply({
             content: 'Pong!',
             ephemeral: true,
-        })
+        });
     }
 } as UMCommand;

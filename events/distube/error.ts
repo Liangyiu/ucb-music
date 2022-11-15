@@ -19,7 +19,7 @@ module.exports = {
                 }
             )
         }
-        console.log(e)
+        console.log(e);
 
         return channel.send(
             {

@@ -12,13 +12,13 @@ module.exports = {
                     messages.forEach(message => {
                         if (message.author.id === queue.distube.client.application?.id) {
                             try {
-                                message.delete()
+                                message.delete();
                             } catch (error) {
-
+                                console.log(error);
                             }
                         }
                     })
-                })
+                });
             } catch (error) {
 
             }
