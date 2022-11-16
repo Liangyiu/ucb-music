@@ -37,15 +37,60 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var discord_js_1 = require("discord.js");
+var getEmbeds = function (songs) { return __awaiter(void 0, void 0, void 0, function () {
+    var embeds, pageNum, i, desc, j;
+    return __generator(this, function (_a) {
+        embeds = [];
+        pageNum = Math.ceil((songs.length - 1) / 10);
+        for (i = 0; i < pageNum; i++) {
+            desc = '';
+            for (j = i * 10; j < songs.length && j < ((i + 1) * 10); j++) {
+                if (j === 0)
+                    continue;
+                desc += "[".concat(j, "](").concat(songs[j].url, ") | `").concat(songs[j].name, "` - `").concat(songs[j].formattedDuration, "`\n");
+            }
+            embeds.push(new discord_js_1.EmbedBuilder()
+                .setFooter({
+                text: "Page ".concat(i + 1, "/").concat(pageNum)
+            })
+                .setDescription(desc)
+                .setTitle('Queue')
+                .setColor('#66bccb'));
+        }
+        return [2 /*return*/, embeds];
+    });
+}); };
+var getRow = function (id, embeds) {
+    var row = new discord_js_1.ActionRowBuilder();
+    row.addComponents(new discord_js_1.ButtonBuilder()
+        .setCustomId('prev_embed')
+        .setEmoji('⬅️')
+        // @ts-ignore
+        .setDisabled(pages[id] === 0)
+        .setStyle(discord_js_1.ButtonStyle.Secondary));
+    row.addComponents(new discord_js_1.ButtonBuilder()
+        .setCustomId('next_embed')
+        .setEmoji('➡️')
+        //@ts-ignore
+        .setDisabled(pages[id] === embeds.length - 1)
+        .setStyle(discord_js_1.ButtonStyle.Secondary));
+    return row;
+};
+var pages = {};
 module.exports = {
-    name: 'previous',
-    description: 'Jumps to the previously played song',
+    name: 'queue',
+    description: 'Displays the currently queued up songs',
     category: 'music',
     cooldown: 10,
+    /**
+     *
+     * @param {CommandInteraction} interaction
+     * @param {Client} client
+     */
     execute: function (interaction, client) {
         var _a;
         return __awaiter(this, void 0, void 0, function () {
-            var guild, member, voicechannel, queue, btnInteraction, message, row, updatedRow, button1, button2, button3, button4, button5;
+            var guild, member, voicechannel, queue, embeds, id, embed, filter, time, msg, collector;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -74,44 +119,54 @@ module.exports = {
                                 content: '⛔ I am currently not playing music.',
                             })];
                     case 6: return [2 /*return*/, _b.sent()];
-                    case 7:
-                        if (!(queue.previousSongs.length === 0)) return [3 /*break*/, 9];
+                    case 7: return [4 /*yield*/, getEmbeds(queue.songs)];
+                    case 8:
+                        embeds = _b.sent();
+                        id = member.id;
+                        // @ts-ignore
+                        pages[id] = 0;
+                        embed = embeds[pages[id]];
+                        filter = function (i) { return i.user.id === member.id; };
+                        time = 1000 * 60 * 1;
                         return [4 /*yield*/, interaction.reply({
+                                fetchReply: true,
                                 ephemeral: true,
-                                content: '⛔ No previous song(s).',
+                                embeds: [embed],
+                                // @ts-ignore
+                                components: [getRow(id, embeds)]
                             })];
-                    case 8: return [2 /*return*/, _b.sent()];
                     case 9:
-                        if (!interaction.isButton()) return [3 /*break*/, 11];
-                        btnInteraction = interaction;
-                        message = btnInteraction.message;
-                        row = message.components[0];
-                        if (!row) return [3 /*break*/, 11];
-                        updatedRow = new discord_js_1.ActionRowBuilder();
-                        button1 = discord_js_1.ButtonBuilder.from(row.components[0]);
-                        button2 = discord_js_1.ButtonBuilder.from(row.components[1]);
-                        button3 = discord_js_1.ButtonBuilder.from(row.components[2]);
-                        button4 = discord_js_1.ButtonBuilder.from(row.components[3]);
-                        button5 = discord_js_1.ButtonBuilder.from(row.components[4]);
-                        button2.setDisabled(true);
-                        button1.setDisabled(true);
-                        button4.setDisabled(true);
-                        button3.setDisabled(true);
-                        updatedRow.addComponents(button1, button2, button3, button4, button5);
-                        // @ts-ignore
-                        return [4 /*yield*/, message.edit({ components: [updatedRow] })];
-                    case 10:
-                        // @ts-ignore
-                        _b.sent();
-                        _b.label = 11;
-                    case 11: return [4 /*yield*/, queue.previous()];
-                    case 12:
-                        _b.sent();
-                        return [4 /*yield*/, interaction.reply({
-                                ephemeral: true,
-                                content: '⏮️ Switched to previous song.',
-                            })];
-                    case 13: return [2 /*return*/, _b.sent()];
+                        msg = _b.sent();
+                        collector = msg.createMessageComponentCollector({
+                            filter: filter,
+                            time: time
+                        });
+                        collector.on('collect', function (i) {
+                            if (i.isButton()) {
+                                i.deferUpdate();
+                                if (i.customId !== 'prev_embed' && i.customId !== 'next_embed') {
+                                    return;
+                                }
+                                // @ts-ignore
+                                if (i.customId === 'prev_embed' && pages[id] > 0) {
+                                    // @ts-ignore
+                                    --pages[id];
+                                    // @ts-ignore
+                                }
+                                else if (i.customId === 'next_embed' && pages[id] < embeds.length - 1) {
+                                    // @ts-ignore
+                                    ++pages[id];
+                                }
+                                interaction.editReply({
+                                    // @ts-ignore
+                                    embeds: [embeds[pages[id]]],
+                                    // @ts-ignore
+                                    components: [getRow(id, embeds)]
+                                });
+                            }
+                            return;
+                        });
+                        return [2 /*return*/];
                 }
             });
         });

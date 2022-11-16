@@ -7,6 +7,41 @@ const status = (queue: Queue) =>
     }\` | Autoplay: \`${queue.autoplay ? 'On' : 'Off'}\``;
 
 
+const buttonrow = new ActionRowBuilder()
+    .addComponents(
+        new ButtonBuilder()
+            .setCustomId('pausebutton')
+            .setEmoji('⏸️')
+            .setStyle(ButtonStyle.Secondary)
+    )
+    .addComponents(
+        new ButtonBuilder()
+            .setCustomId('previousbutton')
+            .setEmoji('⏮️')
+            .setStyle(ButtonStyle.Secondary)
+    )
+    .addComponents(
+        new ButtonBuilder()
+            .setCustomId('stopbutton')
+            .setEmoji('⏹️')
+            .setStyle(ButtonStyle.Secondary)
+    )
+    .addComponents(
+        new ButtonBuilder()
+            .setCustomId('skipbutton')
+            .setEmoji('⏭️')
+            .setStyle(ButtonStyle.Secondary)
+    )
+    .addComponents(
+        new ButtonBuilder()
+            .setCustomId('queuebutton')
+            .setEmoji('📃')
+            .setStyle(ButtonStyle.Secondary)
+            //to be removed when error is fixed
+            .setDisabled(true)
+    )
+
+
 module.exports = {
     name: 'playSong',
     once: false,
@@ -53,8 +88,22 @@ module.exports = {
                 .setFooter({ text: `Song requested by ${song.user?.username}`, iconURL: song.user?.displayAvatarURL() })
         }
 
-        await textChannel?.send({
-            embeds: [cpEmbed]
+        const msg = await textChannel?.send({
+            embeds: [cpEmbed],
+            // @ts-ignore
+            components: [buttonrow],
         });
+
+        await queue.textChannel?.messages.fetch().then(messages => {
+            messages.forEach(message => {
+                if ((message.author.id === queue.distube.client.application?.id) && message.id !== msg?.id) {
+                    try {
+                        message.delete();
+                    } catch (error) {
+
+                    }
+                }
+            })
+        })
     }
 }

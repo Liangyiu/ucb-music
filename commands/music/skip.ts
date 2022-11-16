@@ -1,4 +1,4 @@
-import { CommandInteraction, GuildMember } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, CommandInteraction, GuildMember, Message } from "discord.js";
 import UMClient from "../../interfaces/UMClient";
 import UMCommand from "../../interfaces/UMCommand";
 
@@ -46,6 +46,37 @@ module.exports = {
         }
 
         const song = queue.songs[0];
+
+        if (interaction.isButton()) {
+            const btnInteraction = interaction as ButtonInteraction;
+            const message = btnInteraction.message as Message;
+            const row = message.components[0]
+
+            if (row) {
+                const updatedRow = new ActionRowBuilder();
+
+                // @ts-ignore
+                const button1 = ButtonBuilder.from(row.components[0]);
+                // @ts-ignore
+                const button2 = ButtonBuilder.from(row.components[1]);
+                // @ts-ignore
+                const button3 = ButtonBuilder.from(row.components[2]);
+                // @ts-ignore
+                const button4 = ButtonBuilder.from(row.components[3]);
+                // @ts-ignore
+                const button5 = ButtonBuilder.from(row.components[4]);
+
+                button4.setDisabled(true)
+                button1.setDisabled(true)
+                button2.setDisabled(true)
+                button3.setDisabled(true)
+
+                updatedRow.addComponents(button1, button2, button3, button4, button5);
+
+                // @ts-ignore
+                await message.edit({ components: [updatedRow] })
+            }
+        }
 
         await queue.skip();
 

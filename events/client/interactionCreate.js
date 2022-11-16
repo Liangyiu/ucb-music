@@ -42,7 +42,7 @@ module.exports = {
     execute: function (interaction, client) {
         var _a;
         return __awaiter(this, void 0, void 0, function () {
-            var guild, channel, member, command, err_1, btnInteraction, member_1, guild_1, channel_1, cmd, _b;
+            var guild, channel, member, command, guildCooldowns, commandCooldowns, cooldownEnd, timeLeft, cdDate, cdDate, commandCooldowns_1, cdDate, commandCooldowns, guildCooldowns_1, err_1, btnInteraction, member_1, guild_1, channel_1, cmd, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
@@ -55,7 +55,7 @@ module.exports = {
                             })];
                     case 1: return [2 /*return*/, _c.sent()];
                     case 2:
-                        if (!interaction.isCommand()) return [3 /*break*/, 10];
+                        if (!interaction.isCommand()) return [3 /*break*/, 19];
                         command = client.commands.get(interaction.commandName);
                         if (!!command) return [3 /*break*/, 4];
                         return [4 /*yield*/, interaction.reply({
@@ -76,65 +76,104 @@ module.exports = {
                             })];
                     case 5: return [2 /*return*/, _c.sent()];
                     case 6:
-                        _c.trys.push([6, 8, , 10]);
-                        return [4 /*yield*/, command.execute(interaction, client)];
-                    case 7:
-                        _c.sent();
-                        return [3 /*break*/, 10];
+                        if (!command.cooldown) return [3 /*break*/, 15];
+                        guildCooldowns = client.cmdCooldowns.get((guild === null || guild === void 0 ? void 0 : guild.id) || '');
+                        if (!guildCooldowns) return [3 /*break*/, 14];
+                        commandCooldowns = guildCooldowns.get(command.name);
+                        if (!commandCooldowns) return [3 /*break*/, 12];
+                        cooldownEnd = commandCooldowns.get(member.id);
+                        if (!cooldownEnd) return [3 /*break*/, 10];
+                        timeLeft = Math.round((cooldownEnd.getTime() - Date.now()) / 1000);
+                        if (!(timeLeft > 0)) return [3 /*break*/, 8];
+                        return [4 /*yield*/, interaction.reply({
+                                ephemeral: true,
+                                content: "\u26D4 You must wait `".concat(timeLeft, "` second(s) before using this command again.")
+                            })];
+                    case 7: return [2 /*return*/, _c.sent()];
                     case 8:
+                        commandCooldowns.set(member.id, new Date(Date.now() + (command.cooldown * 1000)));
+                        _c.label = 9;
+                    case 9: return [3 /*break*/, 11];
+                    case 10:
+                        cdDate = new Date(Date.now() + (command.cooldown * 1000));
+                        commandCooldowns.set(member.id, cdDate);
+                        _c.label = 11;
+                    case 11: return [3 /*break*/, 13];
+                    case 12:
+                        cdDate = new Date(Date.now() + (command.cooldown * 1000));
+                        commandCooldowns_1 = new discord_js_1.Collection();
+                        commandCooldowns_1.set(member.id, cdDate);
+                        guildCooldowns.set(command.name, commandCooldowns_1);
+                        _c.label = 13;
+                    case 13: return [3 /*break*/, 15];
+                    case 14:
+                        cdDate = new Date(Date.now() + (command.cooldown * 1000));
+                        commandCooldowns = new discord_js_1.Collection();
+                        commandCooldowns.set(member.id, cdDate);
+                        guildCooldowns_1 = new discord_js_1.Collection();
+                        guildCooldowns_1.set(command.name, commandCooldowns);
+                        client.cmdCooldowns.set((guild === null || guild === void 0 ? void 0 : guild.id) || '', guildCooldowns_1);
+                        _c.label = 15;
+                    case 15:
+                        _c.trys.push([15, 17, , 19]);
+                        return [4 /*yield*/, command.execute(interaction, client)];
+                    case 16:
+                        _c.sent();
+                        return [3 /*break*/, 19];
+                    case 17:
                         err_1 = _c.sent();
                         console.log(err_1);
                         return [4 /*yield*/, interaction.reply({
                                 content: '⛔ There was an error while executing this command!',
                                 ephemeral: true,
                             })];
-                    case 9:
+                    case 18:
                         _c.sent();
-                        return [3 /*break*/, 10];
-                    case 10:
-                        if (!interaction.isButton()) return [3 /*break*/, 25];
+                        return [3 /*break*/, 19];
+                    case 19:
+                        if (!interaction.isButton()) return [3 /*break*/, 34];
                         btnInteraction = interaction;
                         member_1 = interaction.member, guild_1 = interaction.guild, channel_1 = interaction.channel;
                         cmd = void 0;
                         _b = btnInteraction.customId;
                         switch (_b) {
-                            case 'pausebutton': return [3 /*break*/, 11];
-                            case 'playbutton': return [3 /*break*/, 13];
-                            case 'previousbutton': return [3 /*break*/, 15];
-                            case 'stopbutton': return [3 /*break*/, 17];
-                            case 'skipbutton': return [3 /*break*/, 19];
-                            case 'queuebutton': return [3 /*break*/, 21];
+                            case 'pausebutton': return [3 /*break*/, 20];
+                            case 'playbutton': return [3 /*break*/, 22];
+                            case 'previousbutton': return [3 /*break*/, 24];
+                            case 'stopbutton': return [3 /*break*/, 26];
+                            case 'skipbutton': return [3 /*break*/, 28];
+                            case 'queuebutton': return [3 /*break*/, 30];
                         }
-                        return [3 /*break*/, 23];
-                    case 11: return [4 /*yield*/, client.commands.get('pause')];
-                    case 12:
+                        return [3 /*break*/, 32];
+                    case 20: return [4 /*yield*/, client.commands.get('pause')];
+                    case 21:
                         cmd = _c.sent();
-                        return [3 /*break*/, 23];
-                    case 13: return [4 /*yield*/, client.commands.get('resume')];
-                    case 14:
-                        cmd = _c.sent();
-                        return [3 /*break*/, 23];
-                    case 15: return [4 /*yield*/, client.commands.get('previous')];
-                    case 16:
-                        cmd = _c.sent();
-                        return [3 /*break*/, 23];
-                    case 17: return [4 /*yield*/, client.commands.get('stop')];
-                    case 18:
-                        cmd = _c.sent();
-                        return [3 /*break*/, 23];
-                    case 19: return [4 /*yield*/, client.commands.get('skip')];
-                    case 20:
-                        cmd = _c.sent();
-                        return [3 /*break*/, 23];
-                    case 21: return [4 /*yield*/, client.commands.get('queue')];
-                    case 22:
-                        cmd = _c.sent();
-                        return [3 /*break*/, 23];
+                        return [3 /*break*/, 32];
+                    case 22: return [4 /*yield*/, client.commands.get('resume')];
                     case 23:
-                        if (!cmd) return [3 /*break*/, 25];
+                        cmd = _c.sent();
+                        return [3 /*break*/, 32];
+                    case 24: return [4 /*yield*/, client.commands.get('previous')];
+                    case 25:
+                        cmd = _c.sent();
+                        return [3 /*break*/, 32];
+                    case 26: return [4 /*yield*/, client.commands.get('stop')];
+                    case 27:
+                        cmd = _c.sent();
+                        return [3 /*break*/, 32];
+                    case 28: return [4 /*yield*/, client.commands.get('skip')];
+                    case 29:
+                        cmd = _c.sent();
+                        return [3 /*break*/, 32];
+                    case 30: return [4 /*yield*/, client.commands.get('queue')];
+                    case 31:
+                        cmd = _c.sent();
+                        return [3 /*break*/, 32];
+                    case 32:
+                        if (!cmd) return [3 /*break*/, 34];
                         return [4 /*yield*/, cmd.execute(interaction, client)];
-                    case 24: return [2 /*return*/, _c.sent()];
-                    case 25: return [2 /*return*/];
+                    case 33: return [2 /*return*/, _c.sent()];
+                    case 34: return [2 /*return*/];
                 }
             });
         });

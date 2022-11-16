@@ -36,6 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var discord_js_1 = require("discord.js");
 module.exports = {
     name: 'skip',
     description: 'Skips the currently playing song',
@@ -44,7 +45,7 @@ module.exports = {
     execute: function (interaction, client) {
         var _a;
         return __awaiter(this, void 0, void 0, function () {
-            var guild, member, voicechannel, queue, song;
+            var guild, member, voicechannel, queue, song, btnInteraction, message, row, updatedRow, button1, button2, button3, button4, button5;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -82,14 +83,36 @@ module.exports = {
                     case 8: return [2 /*return*/, _b.sent()];
                     case 9:
                         song = queue.songs[0];
-                        return [4 /*yield*/, queue.skip()];
+                        if (!interaction.isButton()) return [3 /*break*/, 11];
+                        btnInteraction = interaction;
+                        message = btnInteraction.message;
+                        row = message.components[0];
+                        if (!row) return [3 /*break*/, 11];
+                        updatedRow = new discord_js_1.ActionRowBuilder();
+                        button1 = discord_js_1.ButtonBuilder.from(row.components[0]);
+                        button2 = discord_js_1.ButtonBuilder.from(row.components[1]);
+                        button3 = discord_js_1.ButtonBuilder.from(row.components[2]);
+                        button4 = discord_js_1.ButtonBuilder.from(row.components[3]);
+                        button5 = discord_js_1.ButtonBuilder.from(row.components[4]);
+                        button4.setDisabled(true);
+                        button1.setDisabled(true);
+                        button2.setDisabled(true);
+                        button3.setDisabled(true);
+                        updatedRow.addComponents(button1, button2, button3, button4, button5);
+                        // @ts-ignore
+                        return [4 /*yield*/, message.edit({ components: [updatedRow] })];
                     case 10:
+                        // @ts-ignore
+                        _b.sent();
+                        _b.label = 11;
+                    case 11: return [4 /*yield*/, queue.skip()];
+                    case 12:
                         _b.sent();
                         return [4 /*yield*/, interaction.reply({
                                 ephemeral: true,
                                 content: '⏭️ Song has been skipped.',
                             })];
-                    case 11: return [2 /*return*/, _b.sent()];
+                    case 13: return [2 /*return*/, _b.sent()];
                 }
             });
         });

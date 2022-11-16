@@ -38,6 +38,53 @@ module.exports = {
                 }
             }
 
+            if (command.cooldown) {
+                const guildCooldowns = client.cmdCooldowns.get(guild?.id || '');
+
+                if (guildCooldowns) {
+                    const commandCooldowns = guildCooldowns.get(command.name);
+
+                    if (commandCooldowns) {
+                        const cooldownEnd = commandCooldowns.get(member.id);
+
+                        if (cooldownEnd) {
+                            const timeLeft = Math.round((cooldownEnd.getTime() - Date.now()) / 1000);
+
+                            if (timeLeft > 0) {
+                                return await interaction.reply({
+                                    ephemeral: true,
+                                    content: `⛔ You must wait \`${timeLeft}\` second(s) before using this command again.`
+                                })
+                            } else {
+                                commandCooldowns.set(member.id, new Date(Date.now() + (command.cooldown * 1000)));
+                            }
+                        } else {
+                            const cdDate = new Date(Date.now() + (command.cooldown * 1000));
+                            commandCooldowns.set(member.id, cdDate);
+                        }
+                    }
+                    else {
+                        const cdDate = new Date(Date.now() + (command.cooldown * 1000));
+
+                        const commandCooldowns = new Collection() as Collection<string, Date>;
+                        commandCooldowns.set(member.id, cdDate);
+
+                        guildCooldowns.set(command.name, commandCooldowns);
+                    }
+                }
+                else {
+                    const cdDate = new Date(Date.now() + (command.cooldown * 1000));
+
+                    const commandCooldowns = new Collection() as Collection<string, Date>;
+                    commandCooldowns.set(member.id, cdDate);
+
+                    const guildCooldowns = new Collection() as Collection<string, Collection<string, Date>>;
+                    guildCooldowns.set(command.name, commandCooldowns);
+
+                    client.cmdCooldowns.set(guild?.id || '', guildCooldowns);
+                }
+            }
+
             try {
                 await command.execute(interaction, client);
             } catch (err) {

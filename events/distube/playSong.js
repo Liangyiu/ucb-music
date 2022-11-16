@@ -41,16 +41,39 @@ require('dotenv').config();
 var status = function (queue) {
     return "Volume: `".concat(queue.volume, "%` | Filter: `").concat(queue.filters.names.join(', ') || 'Off', "` | Loop: `").concat(queue.repeatMode ? (queue.repeatMode === 2 ? 'Queue' : 'Song') : 'Off', "` | Autoplay: `").concat(queue.autoplay ? 'On' : 'Off', "`");
 };
+var buttonrow = new discord_js_1.ActionRowBuilder()
+    .addComponents(new discord_js_1.ButtonBuilder()
+    .setCustomId('pausebutton')
+    .setEmoji('⏸️')
+    .setStyle(discord_js_1.ButtonStyle.Secondary))
+    .addComponents(new discord_js_1.ButtonBuilder()
+    .setCustomId('previousbutton')
+    .setEmoji('⏮️')
+    .setStyle(discord_js_1.ButtonStyle.Secondary))
+    .addComponents(new discord_js_1.ButtonBuilder()
+    .setCustomId('stopbutton')
+    .setEmoji('⏹️')
+    .setStyle(discord_js_1.ButtonStyle.Secondary))
+    .addComponents(new discord_js_1.ButtonBuilder()
+    .setCustomId('skipbutton')
+    .setEmoji('⏭️')
+    .setStyle(discord_js_1.ButtonStyle.Secondary))
+    .addComponents(new discord_js_1.ButtonBuilder()
+    .setCustomId('queuebutton')
+    .setEmoji('📃')
+    .setStyle(discord_js_1.ButtonStyle.Secondary)
+    //to be removed when error is fixed
+    .setDisabled(true));
 module.exports = {
     name: 'playSong',
     once: false,
     distube: true,
     execute: function (queue, song) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e;
         return __awaiter(this, void 0, void 0, function () {
-            var textChannel, cpEmbed;
-            return __generator(this, function (_e) {
-                switch (_e.label) {
+            var textChannel, cpEmbed, msg;
+            return __generator(this, function (_f) {
+                switch (_f.label) {
                     case 0:
                         textChannel = queue.textChannel;
                         cpEmbed = new discord_js_1.EmbedBuilder();
@@ -80,10 +103,26 @@ module.exports = {
                                 .setFooter({ text: "Song requested by ".concat((_c = song.user) === null || _c === void 0 ? void 0 : _c.username), iconURL: (_d = song.user) === null || _d === void 0 ? void 0 : _d.displayAvatarURL() });
                         }
                         return [4 /*yield*/, (textChannel === null || textChannel === void 0 ? void 0 : textChannel.send({
-                                embeds: [cpEmbed]
+                                embeds: [cpEmbed],
+                                // @ts-ignore
+                                components: [buttonrow],
                             }))];
                     case 1:
-                        _e.sent();
+                        msg = _f.sent();
+                        return [4 /*yield*/, ((_e = queue.textChannel) === null || _e === void 0 ? void 0 : _e.messages.fetch().then(function (messages) {
+                                messages.forEach(function (message) {
+                                    var _a;
+                                    if ((message.author.id === ((_a = queue.distube.client.application) === null || _a === void 0 ? void 0 : _a.id)) && message.id !== (msg === null || msg === void 0 ? void 0 : msg.id)) {
+                                        try {
+                                            message.delete();
+                                        }
+                                        catch (error) {
+                                        }
+                                    }
+                                });
+                            }))];
+                    case 2:
+                        _f.sent();
                         return [2 /*return*/];
                 }
             });
