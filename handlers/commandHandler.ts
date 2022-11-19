@@ -54,19 +54,27 @@ export default async function (client: UMClient) {
             console.log('Registering test commands.');
 
             for (let testGuildId of client.testGuilds) {
-                await rest.put(
-                    Routes.applicationGuildCommands(process.env.CLIENTID || '', testGuildId),
-                    { body: client.testCommands },
-                );
+                try {
+                    await rest.put(
+                        Routes.applicationGuildCommands(process.env.CLIENTID || '', testGuildId),
+                        { body: client.testCommands },
+                    );
+                } catch (error) {
+                    
+                }
             }
         } else {
             console.log('Deleting test commands.');
 
             for (let testGuildId of client.testGuilds) {
-                await rest.put(
-                    Routes.applicationGuildCommands(process.env.CLIENTID || '', testGuildId),
-                    { body: client.testCommands },
-                );
+                try {
+                    await rest.put(
+                        Routes.applicationGuildCommands(process.env.CLIENTID || '', testGuildId),
+                        { body: client.testCommands },
+                    );
+                } catch (error) {
+                    
+                }
             }
         }
 

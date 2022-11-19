@@ -3,13 +3,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var discord_js_1 = require("discord.js");
-var distube_1 = require("distube");
-var soundcloud_1 = require("@distube/soundcloud");
-var spotify_1 = require("@distube/spotify");
-var yt_dlp_1 = require("@distube/yt-dlp");
+const discord_js_1 = require("discord.js");
+const distube_1 = require("distube");
+const soundcloud_1 = require("@distube/soundcloud");
+const spotify_1 = require("@distube/spotify");
+const yt_dlp_1 = require("@distube/yt-dlp");
 require('dotenv').config();
-var client = new discord_js_1.Client({
+const client = new discord_js_1.Client({
     intents: [
         discord_js_1.GatewayIntentBits.Guilds,
         discord_js_1.GatewayIntentBits.GuildMembers,
@@ -44,8 +44,8 @@ client.distube = new distube_1.DisTube(client, {
             update: false
         })],
 });
-var eventHandler_1 = __importDefault(require("./handlers/eventHandler"));
-var commandHandler_1 = __importDefault(require("./handlers/commandHandler"));
+const eventHandler_1 = __importDefault(require("./handlers/eventHandler"));
+const commandHandler_1 = __importDefault(require("./handlers/commandHandler"));
 (0, eventHandler_1.default)(client);
 (0, commandHandler_1.default)(client);
 //antiCrash();

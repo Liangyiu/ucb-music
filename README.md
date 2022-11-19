@@ -21,6 +21,13 @@
 		--> ![bot permissions screenshot](assets/screenshots/Discord-Developer-Portal_Bot-Permissions.png)
 	- Copy the **GENERATED URL** and open it.
 	- Select the server you want to add the Bot to from the dropdown. ![select server screenshot](assets/screenshots/Discord-Authorise-access-to-your-account.png)
+	- *(optional)* If you can't see a server in the dropdown, you have to create one. Just complete the following steps and you will be set and good to go on.
+	- *(optional) How to create a discord server:* 
+	- *(optional)* Open you Discord-Application & log in.
+	- *(optional)* Click on the **+** button and create a new server. ![create server button screenshot](assets/screenshots/create_server-button.png)
+	- *(optional)* Click on **Create My Own**. ![create your own server screenshot](assets/screenshots/create_your_own.png)
+	- *(optional)* Click on **For me and my friends**. ![for me and my friends screenshot](assets/screenshots/for_me_and_friends.png)
+	- *(optional)* Give your server a name and click on **Create**. ![create button screenshot](assets/screenshots/name_your_server.png)
 	- All we need now is the **Application ID** and the **TOKEN** of your bot. You can find the **APPLICATION ID** under the **General Information** tab. The **TOKEN** can be found under the **Bot** tab. Click the **Reset Token** button and copy your token. Both will be needed in the next step.
 2. Clone the repo & set up the bot
 	- Clone the repo to where ever you like
@@ -28,7 +35,9 @@
 	- Create a `.env` file in the repo's root directory.
 	- Add your Token to the `.env` file `TOKEN=PASTE_YOUR_BOT_TOKEN_HERE` 
 	- In a new line add you application id `CLIENTID=PASTE_YOUR_APPLICATION_ID_HERE`
-	- *(optional)* If you know how to create a spotify api application you can also add it's credentials to the `.env` file
+	- *(optional)* If you know how to create a spotify api application you can also add it's credentials to the `.env` file. If you don't have the credentials you have to comment out a part of the code in the `index.ts`. ![comment out screenshot](assets/screenshots/comment_out.png) After that save the file and recompile with `npm run build`.
 	- *(optional)* `SPOTIFYCLIENTID=PASTE_YOUR_SPOTIFY_CIENT_ID_HERE`
 	- *(optional)* `SPOTIFYCLIENTSECRET=PASTE_YOUR_SPOTIFY_CLIENT_SECRET_HERE`
-3. Start the bot with `node index.js` & enjoy music together!
+3. Start the bot with `npm run start` & enjoy music together!
+
+--*It might take up to 2 hours until the bot's commands show up on your server*--
