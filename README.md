@@ -41,3 +41,49 @@
 3. Start the bot with `npm run start` & enjoy music together!
 
 --*It might take up to 2 hours until the bot's commands show up on your server*--
+
+## Folder structure
+
+```
+ucb-music/
+	commands/
+		command-category/
+			command.ts
+	events/
+		client/
+			event.ts
+		distube/
+			distube-event.ts
+	handlers/
+		handler.ts
+	interfaces/
+		interface.ts
+	utility/
+		utility.ts
+	.env
+	index.ts
+```
+
+### commands/
+Holds all commands and command-category-folders
+
+### commands/command-category/
+Holds all commmands of a certain category
+
+### events/
+Holds all events emitted by either the discord.js bot client or the distube.js music playback package
+
+### events/client/
+Holds all events emitted by the discord.js bot client
+
+### events/distube/
+Holds all events emitted by the distube.js music playback package
+
+### handlers/
+Holds all handlers, e.g. command-handler, event-handler, ...
+
+### interfaces/
+Holds all interfaces to make typescript happy, e.g. UMCommand-interface
+
+### utilitly/
+Holds the file with all utility classes & functions used across the project
