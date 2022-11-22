@@ -85,5 +85,5 @@ Holds all handlers, e.g. command-handler, event-handler, ...
 ### interfaces/
 Holds all interfaces to make typescript happy, e.g. UMCommand-interface
 
-### utilitly/
+### utility/
 Holds the file with all utility classes & functions used across the project
