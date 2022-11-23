@@ -3,13 +3,22 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = require("discord.js");
 const getEmbeds = async (songs) => {
     const embeds = [];
-    const pageNum = Math.ceil((songs.length - 1) / 10);
+    let pageNum;
+    if (Math.ceil((songs.length - 1) / 10) === 0) {
+        pageNum = 1;
+    }
+    else {
+        pageNum = Math.ceil((songs.length - 1) / 10);
+    }
     for (let i = 0; i < pageNum; i++) {
         let desc = '';
         for (let j = i * 10; j < songs.length && j < ((i + 1) * 10); j++) {
-            if (j === 0)
-                continue;
-            desc += `[${j}](${songs[j].url}) | \`${songs[j].name}\` - \`${songs[j].formattedDuration}\`\n`;
+            if ((i === 0) && (j === 0)) {
+                desc += `Currently Playing\n[${j}](${songs[j].url}) | \`${songs[j].name}\` - \`${songs[j].formattedDuration}\`\n---------------\n`;
+            }
+            else {
+                desc += `[${j}](${songs[j].url}) | \`${songs[j].name}\` - \`${songs[j].formattedDuration}\`\n`;
+            }
         }
         embeds.push(new discord_js_1.EmbedBuilder()
             .setFooter({
@@ -43,11 +52,6 @@ module.exports = {
     description: 'Displays the currently queued up songs',
     category: 'music',
     cooldown: 10,
-    /**
-     *
-     * @param {CommandInteraction} interaction
-     * @param {Client} client
-     */
     async execute(interaction, client) {
         const { guild } = interaction;
         const member = interaction.member;

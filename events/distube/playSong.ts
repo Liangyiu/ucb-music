@@ -37,8 +37,7 @@ const buttonrow = new ActionRowBuilder()
             .setCustomId('queuebutton')
             .setEmoji('📃')
             .setStyle(ButtonStyle.Secondary)
-            //to be removed when error is fixed
-            .setDisabled(true)
+            .setDisabled(false)
     )
 
 

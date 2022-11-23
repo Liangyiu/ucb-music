@@ -24,8 +24,7 @@ const buttonrow = new discord_js_1.ActionRowBuilder()
     .setCustomId('queuebutton')
     .setEmoji('📃')
     .setStyle(discord_js_1.ButtonStyle.Secondary)
-    //to be removed when error is fixed
-    .setDisabled(true));
+    .setDisabled(false));
 module.exports = {
     name: 'playSong',
     once: false,

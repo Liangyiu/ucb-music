@@ -4,15 +4,23 @@ import UMClient from '../../interfaces/UMClient';
 
 const getEmbeds = async (songs: Array<Song>) => {
     const embeds = [];
+    let pageNum
 
-    const pageNum = Math.ceil((songs.length - 1) / 10);
+    if (Math.ceil((songs.length - 1) / 10) === 0) {
+        pageNum = 1;
+    } else {
+        pageNum = Math.ceil((songs.length - 1) / 10);
+    }
 
     for (let i = 0; i < pageNum; i++) {
         let desc = '';
 
         for (let j = i * 10; j < songs.length && j < ((i + 1) * 10); j++) {
-            if (j === 0) continue;
-            desc += `[${j}](${songs[j].url}) | \`${songs[j].name}\` - \`${songs[j].formattedDuration}\`\n`
+            if ((i === 0) && (j === 0)) {
+                desc += `Currently Playing\n[${j}](${songs[j].url}) | \`${songs[j].name}\` - \`${songs[j].formattedDuration}\`\n---------------\n`
+            } else {
+                desc += `[${j}](${songs[j].url}) | \`${songs[j].name}\` - \`${songs[j].formattedDuration}\`\n`
+            }
         }
 
         embeds.push(new EmbedBuilder()
@@ -23,7 +31,6 @@ const getEmbeds = async (songs: Array<Song>) => {
             .setTitle('Queue')
             .setColor('#66bccb')
         )
-
     }
 
     return embeds;
@@ -63,11 +70,7 @@ module.exports = {
 
     cooldown: 10,
 
-    /**
-     * 
-     * @param {CommandInteraction} interaction 
-     * @param {Client} client
-     */
+
     async execute(interaction: CommandInteraction, client: UMClient) {
         const { guild } = interaction;
         const member = interaction.member as GuildMember;
@@ -97,7 +100,7 @@ module.exports = {
             });
         }
 
-        const embeds = await getEmbeds(queue.songs)
+        const embeds = await getEmbeds(queue.songs);
 
         const id = member.id;
         // @ts-ignore
