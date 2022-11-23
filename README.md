@@ -58,6 +58,8 @@ ucb-music/
 		handler.ts
 	interfaces/
 		interface.ts
+	schemas/
+		schema.ts
 	utility/
 		utility.ts
 	.env
@@ -84,6 +86,9 @@ Holds all handlers, e.g. command-handler, event-handler, ...
 
 ### interfaces/
 Holds all interfaces to make typescript happy, e.g. UMCommand-interface
+
+### schemas/
+Holds all mongo-db schemas
 
 ### utility/
 Holds the file with all utility classes & functions used across the project
