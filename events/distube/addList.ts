@@ -13,7 +13,7 @@ module.exports = {
             {
                 embeds: [
                     new EmbedBuilder()
-                        .setColor('#66bccb')
+                        .setColor('#43ac34')
                         .setTitle(`<a:flame_play:938203675178967130> \`Playlist added\``)
                         .setDescription(`\`${playlist.name}\``)
                         .addFields(

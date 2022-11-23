@@ -54,8 +54,8 @@ module.exports = {
 
         if (!song.isLive) {
             cpEmbed
-                .setColor('#66bccb')
-                .setTitle(`<a:infinity_play:938203674226880582> \`${song.name}\``)
+                .setColor('#43ac34')
+                .setTitle(`<:ucb:1044983268686168065> \`${song.name}\``)
                 .addFields(
                     { name: 'Duration', value: `\`${song.formattedDuration}\``, inline: true },
                 )
@@ -70,8 +70,8 @@ module.exports = {
                 .setFooter({ text: `Song requested by ${song.user?.username}`, iconURL: song.user?.displayAvatarURL() })
         } else {
             cpEmbed
-                .setColor('#66bccb')
-                .setTitle(`<a:infinity_play:938203674226880582> \`${song.name}\``)
+                .setColor('#43ac34')
+                .setTitle(`<:ucb:1044983268686168065> \`${song.name}\``)
                 .addFields(
                     { name: 'Duration', value: `\`${song.formattedDuration}\``, inline: true },
                 )

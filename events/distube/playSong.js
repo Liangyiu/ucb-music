@@ -35,7 +35,7 @@ module.exports = {
         if (!song.isLive) {
             cpEmbed
                 .setColor('#66bccb')
-                .setTitle(`<a:infinity_play:938203674226880582> \`${song.name}\``)
+                .setTitle(`<:ucb:1044983268686168065> \`${song.name}\``)
                 .addFields({ name: 'Duration', value: `\`${song.formattedDuration}\``, inline: true })
                 .addFields({
                 name: 'Queue-Length', value: `\`${queue.songs.length === 1 ? `${queue.songs.length}\` song` : `${queue.songs.length}\` songs`} - \`${queue.formattedDuration}\``
@@ -47,7 +47,7 @@ module.exports = {
         else {
             cpEmbed
                 .setColor('#66bccb')
-                .setTitle(`<a:infinity_play:938203674226880582> \`${song.name}\``)
+                .setTitle(`<:ucb:1044983268686168065> \`${song.name}\``)
                 .addFields({ name: 'Duration', value: `\`${song.formattedDuration}\``, inline: true })
                 .addFields({
                 name: 'Queue-Length', value: `\`${queue.songs.length === 1 ? `${queue.songs.length}\` song` : `${queue.songs.length}\` songs`} - \`${queue.formattedDuration}\``
