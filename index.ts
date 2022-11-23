@@ -48,9 +48,12 @@ client.distube = new DisTube(client, {
 import handleEvents from './handlers/eventHandler';
 import handleCommands from './handlers/commandHandler';
 import antiCrash from './handlers/antiCrash';
+import dbLogin from './handlers/dbLogin';
 
 handleEvents(client);
 handleCommands(client);
 //antiCrash();
+
+dbLogin(client);
 
 client.login(process.env.TOKEN);

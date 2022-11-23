@@ -46,7 +46,9 @@ client.distube = new distube_1.DisTube(client, {
 });
 const eventHandler_1 = __importDefault(require("./handlers/eventHandler"));
 const commandHandler_1 = __importDefault(require("./handlers/commandHandler"));
+const dbLogin_1 = __importDefault(require("./handlers/dbLogin"));
 (0, eventHandler_1.default)(client);
 (0, commandHandler_1.default)(client);
 //antiCrash();
+(0, dbLogin_1.default)(client);
 client.login(process.env.TOKEN);
