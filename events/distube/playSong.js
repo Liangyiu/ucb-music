@@ -34,7 +34,7 @@ module.exports = {
         let cpEmbed = new discord_js_1.EmbedBuilder();
         if (!song.isLive) {
             cpEmbed
-                .setColor('#66bccb')
+                .setColor('#43ac34')
                 .setTitle(`<:ucb:1044983268686168065> \`${song.name}\``)
                 .addFields({ name: 'Duration', value: `\`${song.formattedDuration}\``, inline: true })
                 .addFields({
@@ -46,7 +46,7 @@ module.exports = {
         }
         else {
             cpEmbed
-                .setColor('#66bccb')
+                .setColor('#43ac34')
                 .setTitle(`<:ucb:1044983268686168065> \`${song.name}\``)
                 .addFields({ name: 'Duration', value: `\`${song.formattedDuration}\``, inline: true })
                 .addFields({

@@ -9,7 +9,7 @@ module.exports = {
         await queue.textChannel?.send({
             embeds: [
                 new discord_js_1.EmbedBuilder()
-                    .setColor('#66bccb')
+                    .setColor('#43ac34')
                     .setTitle(`<a:flame_play:938203675178967130> \`Playlist added\``)
                     .setDescription(`\`${playlist.name}\``)
                     .addFields({
