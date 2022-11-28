@@ -11,7 +11,7 @@ module.exports = {
             description: 'The position to jump to - can be positive or negative',
             required: true,
             type: discord_js_1.ApplicationCommandOptionType.Number,
-        }
+        },
     ],
     cooldown: 10,
     async execute(interaction, client) {
@@ -64,7 +64,7 @@ module.exports = {
             });
         }
         else if (position < 0) {
-            if (position < -(queue.previousSongs.length)) {
+            if (position < -queue.previousSongs.length) {
                 return await interaction.reply({
                     ephemeral: true,
                     content: '⛔ This position is out of reach.',
@@ -81,5 +81,5 @@ module.exports = {
                 content: `✅ Jumped to position \`${position}\`.`,
             });
         }
-    }
+    },
 };

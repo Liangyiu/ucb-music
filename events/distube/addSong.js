@@ -13,12 +13,16 @@ module.exports = {
                     .setURL(song.url)
                     .setDescription(`\`${song.name}\``)
                     .addFields({
-                    name: 'Duration', value: `\`${song.formattedDuration}\``, inline: true
+                    name: 'Duration',
+                    value: `\`${song.formattedDuration}\``,
+                    inline: true,
                 }, {
-                    name: 'Queue-Length', value: `${queue.songs.length} songs - \`${queue.formattedDuration}\``, inline: true
+                    name: 'Queue-Length',
+                    value: `${queue.songs.length} songs - \`${queue.formattedDuration}\``,
+                    inline: true,
                 })
-                    .setFooter({ text: `Requested by ${song.user?.username}`, iconURL: song.user?.displayAvatarURL() })
-            ]
+                    .setFooter({ text: `Requested by ${song.user?.username}`, iconURL: song.user?.displayAvatarURL() }),
+            ],
         });
-    }
+    },
 };

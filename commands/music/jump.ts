@@ -1,6 +1,12 @@
-import { ApplicationCommandOptionType, CommandInteraction, CommandInteractionOptionResolver, Constants, GuildMember } from "discord.js";
-import UMClient from "../../interfaces/UMClient";
-import UMCommand from "../../interfaces/UMCommand";
+import {
+    ApplicationCommandOptionType,
+    CommandInteraction,
+    CommandInteractionOptionResolver,
+    Constants,
+    GuildMember,
+} from 'discord.js';
+import UMClient from '../../interfaces/UMClient';
+import UMCommand from '../../interfaces/UMCommand';
 
 module.exports = {
     name: 'jump',
@@ -13,7 +19,7 @@ module.exports = {
             description: 'The position to jump to - can be positive or negative',
             required: true,
             type: ApplicationCommandOptionType.Number,
-        }
+        },
     ],
 
     cooldown: 10,
@@ -76,7 +82,7 @@ module.exports = {
                 content: `✅ Jumped to position \`${position}\`.`,
             });
         } else if (position < 0) {
-            if (position < -(queue.previousSongs.length)) {
+            if (position < -queue.previousSongs.length) {
                 return await interaction.reply({
                     ephemeral: true,
                     content: '⛔ This position is out of reach.',
@@ -94,6 +100,5 @@ module.exports = {
                 content: `✅ Jumped to position \`${position}\`.`,
             });
         }
-    }
-
+    },
 } as UMCommand;

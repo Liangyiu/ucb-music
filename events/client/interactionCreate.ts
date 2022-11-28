@@ -1,5 +1,6 @@
 import { CommandInteraction, EmbedBuilder, ButtonInteraction, Collection, GuildMember } from "discord.js";
 import UMClient from "../../interfaces/UMClient";
+import utility from '../../utility/utility';
 
 module.exports = {
     name: 'interactionCreate',
@@ -87,6 +88,8 @@ module.exports = {
 
             try {
                 await command.execute(interaction, client);
+
+                await utility.commandUsed(command.name);
             } catch (err) {
                 console.log(err);
 

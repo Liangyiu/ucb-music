@@ -1,4 +1,11 @@
-import { CommandInteraction, Client, Constants, GuildMember, ApplicationCommandOptionType, CommandInteractionOptionResolver } from 'discord.js';
+import {
+    CommandInteraction,
+    Client,
+    Constants,
+    GuildMember,
+    ApplicationCommandOptionType,
+    CommandInteractionOptionResolver,
+} from 'discord.js';
 import UMClient from '../../interfaces/UMClient';
 
 module.exports = {
@@ -14,7 +21,7 @@ module.exports = {
             description: 'Index of the song you want to remove.',
             type: ApplicationCommandOptionType.Number,
             required: true,
-        }
+        },
     ],
 
     async execute(interaction: CommandInteraction, client: UMClient) {
@@ -54,24 +61,24 @@ module.exports = {
 
             return await interaction.reply({
                 ephemeral: true,
-                content: '✅ Removed the currently playing song.'
-            })
+                content: '✅ Removed the currently playing song.',
+            });
         }
 
-        if ((index < 0) || (index >= queue.songs.length)){
+        if (index < 0 || index >= queue.songs.length) {
             return await interaction.reply({
                 ephemeral: true,
-                content: '⛔ Index out of range.'
-            })
+                content: '⛔ Index out of range.',
+            });
         }
 
         const song = queue.songs[index];
 
-        await queue.songs.splice(index, 1); 
+        await queue.songs.splice(index, 1);
 
         interaction.reply({
             ephemeral: true,
-            content: `✅ Successfully removed \`${song.name}\` from the queue.`
-        })
-    }
+            content: `✅ Successfully removed \`${song.name}\` from the queue.`,
+        });
+    },
 };

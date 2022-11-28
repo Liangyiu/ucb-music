@@ -1,6 +1,10 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = require("discord.js");
+const utility_1 = __importDefault(require("../../utility/utility"));
 module.exports = {
     name: 'interactionCreate',
     async execute(interaction, client) {
@@ -73,6 +77,7 @@ module.exports = {
             }
             try {
                 await command.execute(interaction, client);
+                await utility_1.default.commandUsed(command.name);
             }
             catch (err) {
                 console.log(err);

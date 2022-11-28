@@ -12,7 +12,7 @@ module.exports = {
             description: 'Index of the song you want to remove.',
             type: discord_js_1.ApplicationCommandOptionType.Number,
             required: true,
-        }
+        },
     ],
     async execute(interaction, client) {
         const { guild } = interaction;
@@ -43,20 +43,20 @@ module.exports = {
             await queue.skip();
             return await interaction.reply({
                 ephemeral: true,
-                content: '✅ Removed the currently playing song.'
+                content: '✅ Removed the currently playing song.',
             });
         }
-        if ((index < 0) || (index >= queue.songs.length)) {
+        if (index < 0 || index >= queue.songs.length) {
             return await interaction.reply({
                 ephemeral: true,
-                content: '⛔ Index out of range.'
+                content: '⛔ Index out of range.',
             });
         }
         const song = queue.songs[index];
         await queue.songs.splice(index, 1);
         interaction.reply({
             ephemeral: true,
-            content: `✅ Successfully removed \`${song.name}\` from the queue.`
+            content: `✅ Successfully removed \`${song.name}\` from the queue.`,
         });
-    }
+    },
 };
