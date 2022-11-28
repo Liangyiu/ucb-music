@@ -61,4 +61,20 @@ exports.default = {
             upsert: true
         });
     },
+    async getCommandsUsedCount() {
+        const res = await commandsUsed_1.default.aggregate([
+            {
+                $group: {
+                    "_id": null,
+                    "count": {
+                        "$sum": "$count"
+                    }
+                }
+            }
+        ]);
+        if (res)
+            return res[0].count;
+        else
+            return 0;
+    },
 };

@@ -11,7 +11,7 @@ module.exports = {
     category: 'info',
     cooldown: 10,
     async execute(interaction, client) {
-        // const commandsUsed = await utility.getCommmandsUsed();
+        const commandsUsed = await utility_1.default.getCommandsUsedCount();
         const songsPlayed = await utility_1.default.getSongsPlayedCount();
         const mostPlayedSong = await utility_1.default.getMostPlayedSong();
         const serverCount = client.guilds.cache.size;
@@ -34,9 +34,13 @@ module.exports = {
             name: 'Songs Played',
             value: `\`\`\`${songsPlayed}\`\`\``,
             inline: true,
+        }, {
+            name: 'Commands Used',
+            value: `\`\`\`${commandsUsed}\`\`\``,
+            inline: true,
         })
             .setFooter({
-            text: 'Llama-Music Statistics',
+            text: 'UCB-Music Statistics',
             iconURL: client.user?.displayAvatarURL(),
         });
         return interaction.reply({
