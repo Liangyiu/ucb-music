@@ -92,3 +92,12 @@ Holds all mongo-db schemas
 
 ### utility/
 Holds the file with all utility classes & functions used across the project
+
+
+## Activity diagrams
+
+### play command
+![play cmd flow](assets/activity-diagrams/play-flow.png)
+
+### queue command
+![queue flow](assets/activity-diagrams/queue-flow.png)
