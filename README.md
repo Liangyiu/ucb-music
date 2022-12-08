@@ -45,7 +45,7 @@
 ## Folder structure
 
 ```
-ucb-music/
+ucb-music/src/
 	commands/
 		command-category/
 			command.ts
