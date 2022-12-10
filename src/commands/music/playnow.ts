@@ -7,6 +7,7 @@ import {
 } from 'discord.js';
 import { Song } from 'distube';
 import UMClient from '../../interfaces/UMClient';
+import UMCommand from '../../interfaces/UMCommand';
 
 module.exports = {
     name: 'playnow',
@@ -14,6 +15,8 @@ module.exports = {
     category: 'music',
 
     cooldown: 10,
+
+    djOnly: true,
 
     options: [
         {
@@ -70,4 +73,4 @@ module.exports = {
             });
         } catch (error) {}
     },
-};
+} as UMCommand;

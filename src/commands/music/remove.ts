@@ -1,12 +1,13 @@
 import {
     CommandInteraction,
-    Client,
-    Constants,
     GuildMember,
     ApplicationCommandOptionType,
     CommandInteractionOptionResolver,
 } from 'discord.js';
 import UMClient from '../../interfaces/UMClient';
+import UMCommand from '../../interfaces/UMCommand';
+import UMServerSettings from '../../interfaces/UMServerSettings';
+import utility from '../../utility/utility';
 
 module.exports = {
     name: 'remove',
@@ -14,6 +15,8 @@ module.exports = {
     category: 'music',
 
     cooldown: 10,
+
+    userOnly: true,
 
     options: [
         {
@@ -74,6 +77,17 @@ module.exports = {
 
         const song = queue.songs[index];
 
+        const serverSettings = client.serverSettings.get(guild?.id || '') as UMServerSettings;
+        
+        if (song?.user?.id !== member.id) {
+            if (!await utility.hasDjPerms(serverSettings, member)){
+                return await interaction.reply({
+                    ephemeral: true,
+                    content: '⛔ Users can only remove songs they added themselves.'
+                })
+            }
+        }
+
         await queue.songs.splice(index, 1);
 
         interaction.reply({
@@ -81,4 +95,4 @@ module.exports = {
             content: `✅ Successfully removed \`${song.name}\` from the queue.`,
         });
     },
-};
+} as UMCommand;

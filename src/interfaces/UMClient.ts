@@ -11,6 +11,7 @@ export default interface UMClient extends Client {
     testCommands: ApplicationCommandDataResolvable[],
     cmdCooldowns: Collection<string, Collection<string, Collection<string, Date>>>,
     botOwners: string[],
+    serverSettings: Collection<string, Object>,
 }
 
 //Interface for the bot client, needed because of the use of typescript

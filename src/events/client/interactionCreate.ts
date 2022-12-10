@@ -1,5 +1,6 @@
 import { CommandInteraction, EmbedBuilder, ButtonInteraction, Collection, GuildMember } from "discord.js";
 import UMClient from "../../interfaces/UMClient";
+import UMServerSettings from "../../interfaces/UMServerSettings";
 import utility from '../../utility/utility';
 
 module.exports = {
@@ -15,6 +16,14 @@ module.exports = {
                 ephemeral: true,
                 content: '⛔ Commands can only be used in guilds!'
             })
+        }
+
+        let serverSettings = client.serverSettings.get(guild?.id || '') as UMServerSettings;
+
+        if (!serverSettings) {
+            serverSettings = await utility.getServerSettings(guild?.id || '');
+
+            client.serverSettings.set(guild?.id || '', serverSettings);
         }
 
         if (interaction.isCommand()) {
@@ -83,6 +92,33 @@ module.exports = {
                     guildCooldowns.set(command.name, commandCooldowns);
 
                     client.cmdCooldowns.set(guild?.id || '', guildCooldowns);
+                }
+            }
+
+            if (command.adminOnly) {
+                if (!await utility.hasAdminPerms(serverSettings.adminRoleId, member)) {
+                    return await interaction.reply({
+                        ephemeral: true,
+                        content: '⛔ Did not execute command.\nReason: \`command is admin-only\`'
+                    })
+                }
+            }
+
+            if (command.djOnly) {
+                if (!await utility.hasDjPerms(serverSettings, member)) {
+                    return await interaction.reply({
+                        ephemeral: true,
+                        content: '⛔ Did not execute command.\nReason: \`command is dj-only\`'
+                    })
+                }
+            }
+
+            if (command.userOnly) {
+                if (!await utility.hasUserPerms(serverSettings, member)) {
+                    return await interaction.reply({
+                        ephemeral: true,
+                        content: '⛔ Did not execute command.\nReason: \`command is user-only\`'
+                    })
                 }
             }
 

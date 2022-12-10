@@ -1,5 +1,6 @@
 import { CommandInteraction, Client, Permissions, ApplicationCommandOptionType, GuildMember, CommandInteractionOptionResolver } from 'discord.js';
 import UMClient from '../../interfaces/UMClient';
+import UMCommand from '../../interfaces/UMCommand';
 
 module.exports = {
     name: 'backward',
@@ -7,6 +8,8 @@ module.exports = {
     category: 'music',
 
     cooldown: 5,
+
+    djOnly: true,
 
     options: [
         {
@@ -72,4 +75,4 @@ module.exports = {
             content: `⏪ Jumped backwards \`${seekSeconds}\` seconds.`,
         });
     }
-}
+} as UMCommand;

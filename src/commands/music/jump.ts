@@ -2,7 +2,6 @@ import {
     ApplicationCommandOptionType,
     CommandInteraction,
     CommandInteractionOptionResolver,
-    Constants,
     GuildMember,
 } from 'discord.js';
 import UMClient from '../../interfaces/UMClient';
@@ -23,6 +22,8 @@ module.exports = {
     ],
 
     cooldown: 10,
+
+    djOnly: true,
 
     async execute(interaction: CommandInteraction, client: UMClient) {
         const { guild } = interaction;

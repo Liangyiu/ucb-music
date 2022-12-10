@@ -20,6 +20,7 @@ client.cmdCooldowns = new Collection();
 client.commands = new Collection();
 client.testGuilds = ['930884852776067083'];
 client.botOwners = ['158551305952952320'];
+client.serverSettings = new Collection();
 
 client.distube = new DisTube(client, {
     savePreviousSongs: true,

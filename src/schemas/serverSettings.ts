@@ -23,7 +23,6 @@ interface serverSettings {
     adminRoleId: String,
     djRoleId: String,
     userRoleId: String,
-    playlistsDjOnly: Boolean,
     spotifyFetching: Boolean,
     musicChannelId: String,
     loopMode: Number,
@@ -31,7 +30,6 @@ interface serverSettings {
     defaultVolume: Number,
     songsPerUserLimit: Number,
     stealthMode: Boolean,
-    preventDuplicates: Boolean,
     queueLimit: Number,
 };
 

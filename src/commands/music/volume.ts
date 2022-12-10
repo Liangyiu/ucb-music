@@ -5,6 +5,7 @@ import {
     GuildMember,
 } from 'discord.js';
 import UMClient from '../../interfaces/UMClient';
+import UMCommand from '../../interfaces/UMCommand';
 
 module.exports = {
     name: 'volume',
@@ -12,6 +13,8 @@ module.exports = {
     category: 'music',
 
     cooldown: 5,
+
+    djOnly: true,
 
     options: [
         {
@@ -68,4 +71,4 @@ module.exports = {
             content: `🔊 Volume has been set to \`${volume}%\`.`,
         });
     },
-};
+} as UMCommand;

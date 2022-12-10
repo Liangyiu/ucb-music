@@ -1,5 +1,11 @@
-import { CommandInteraction, Client, Permissions, Constants, GuildMember, ApplicationCommandOptionType, CommandInteractionOptionResolver } from "discord.js";
-import UMClient from "../../interfaces/UMClient";
+import {
+    CommandInteraction,
+    GuildMember,
+    ApplicationCommandOptionType,
+    CommandInteractionOptionResolver,
+} from 'discord.js';
+import UMClient from '../../interfaces/UMClient';
+import UMCommand from '../../interfaces/UMCommand';
 
 module.exports = {
     name: 'seek',
@@ -8,13 +14,15 @@ module.exports = {
 
     cooldown: 5,
 
+    djOnly: true,
+
     options: [
         {
             name: 'seconds',
             description: 'Specify the number of seconds to seek to',
             type: ApplicationCommandOptionType.Number,
             required: true,
-        }
+        },
     ],
 
     async execute(interaction: CommandInteraction, client: UMClient) {
@@ -53,7 +61,7 @@ module.exports = {
             return await interaction.reply({
                 ephemeral: true,
                 content: '⛔ You must specify a number of seconds greater than 0.',
-            })
+            });
         }
 
         if (seekSeconds > queue.songs[0].duration) {
@@ -63,14 +71,13 @@ module.exports = {
             });
         }
 
-        if (seekSeconds === queue.songs[0].duration)
-            seekSeconds -= 1;
-        
+        if (seekSeconds === queue.songs[0].duration) seekSeconds -= 1;
+
         await queue.seek(seekSeconds);
 
         return await interaction.reply({
             ephemeral: true,
             content: `✅ Seeked to \`${seekSeconds}\` seconds.`,
         });
-    }
-}
+    },
+} as UMCommand;

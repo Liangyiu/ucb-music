@@ -1,6 +1,8 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, CommandInteraction, GuildMember, Message } from 'discord.js';
 import UMClient from '../../interfaces/UMClient';
 import UMCommand from '../../interfaces/UMCommand';
+import UMServerSettings from '../../interfaces/UMServerSettings';
+import utility from '../../utility/utility';
 
 module.exports = {
     name: 'resume',
@@ -14,6 +16,15 @@ module.exports = {
         const member = interaction.member as GuildMember;
 
         const voicechannel = member.voice.channel;
+
+        let serverSettings = client.serverSettings.get(guild?.id || '') as UMServerSettings;
+
+        if (!await utility.hasDjPerms(serverSettings, member)) {
+            return await interaction.reply({
+                ephemeral: true,
+                content: '⛔ Did not execute the command.\nReason: \`dj-only\`'
+            })
+        }
 
         if (!voicechannel) {
             return await interaction.reply({

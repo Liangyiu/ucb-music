@@ -1,5 +1,6 @@
 import { CommandInteraction, GuildMember } from 'discord.js';
 import UMClient from '../../interfaces/UMClient';
+import UMCommand from '../../interfaces/UMCommand';
 
 module.exports = {
     name: 'clear',
@@ -7,6 +8,8 @@ module.exports = {
     category: 'music',
 
     cooldown: 30,
+
+    djOnly: true,
 
     async execute(interaction: CommandInteraction, client: UMClient) {
         const { guild } = interaction;
@@ -53,4 +56,4 @@ module.exports = {
             content: `✅ Cleared the queue. Removed \`${oldQueueLength}\` songs.`,
         });
     },
-};
+} as UMCommand;

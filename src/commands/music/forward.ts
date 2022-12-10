@@ -5,6 +5,7 @@ import {
     CommandInteractionOptionResolver,
 } from 'discord.js';
 import UMClient from '../../interfaces/UMClient';
+import UMCommand from '../../interfaces/UMCommand';
 
 module.exports = {
     name: 'forward',
@@ -21,6 +22,8 @@ module.exports = {
     ],
 
     cooldown: 5,
+
+    djOnly: true,
 
     async execute(interaction: CommandInteraction, client: UMClient) {
         const { guild } = interaction;
@@ -75,4 +78,4 @@ module.exports = {
             content: `⏩ Jumped forward \`${seekSeconds}\` seconds.`,
         });
     },
-};
+} as UMCommand;

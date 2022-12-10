@@ -1,5 +1,6 @@
 import { CommandInteraction, GuildMember } from 'discord.js';
 import UMClient from '../../interfaces/UMClient';
+import UMCommand from '../../interfaces/UMCommand';
 
 module.exports = {
     name: 'shuffle',
@@ -7,6 +8,8 @@ module.exports = {
     category: 'music',
 
     cooldown: 10,
+
+    djOnly: true,
 
     async execute(interaction: CommandInteraction, client: UMClient) {
         const { guild } = interaction;
@@ -44,4 +47,4 @@ module.exports = {
             content: 'The queue has been shuffled.',
         });
     },
-};
+} as UMCommand;

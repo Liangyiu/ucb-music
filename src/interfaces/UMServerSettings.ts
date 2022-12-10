@@ -1,0 +1,15 @@
+export default interface UMServerSettings{
+    _id: string,
+    adminRoleId: string,
+    autoplay: boolean,
+    buttonControls: boolean,
+    defaultVolume: number,
+    djRoleId: string,
+    loopMode: number,
+    musicChannelId: string,
+    queueLimit: number,
+    songsPerUserLimit: number,
+    spotifyFetching: boolean,
+    stealthMode: boolean,
+    userRoleId: string,
+}

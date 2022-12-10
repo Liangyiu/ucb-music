@@ -1,5 +1,6 @@
 import { CommandInteraction, GuildMember } from 'discord.js';
 import UMClient from '../../interfaces/UMClient';
+import UMCommand from '../../interfaces/UMCommand';
 
 module.exports = {
     name: 'autoplay',
@@ -7,6 +8,8 @@ module.exports = {
     category: 'music',
 
     cooldown: 10,
+
+    djOnly: true,
 
     async execute(interaction: CommandInteraction, client: UMClient) {
         const { guild } = interaction;
@@ -51,4 +54,4 @@ module.exports = {
             content: `✅ Autoplay for the current queue is now \`disabled\`.`,
         });
     },
-};
+} as UMCommand;

@@ -5,6 +5,7 @@ import {
     CommandInteractionOptionResolver,
 } from 'discord.js';
 import UMClient from '../../interfaces/UMClient';
+import UMCommand from '../../interfaces/UMCommand';
 
 module.exports = {
     name: 'loop',
@@ -12,6 +13,8 @@ module.exports = {
     category: 'music',
 
     cooldown: 10,
+
+    djOnly: true,
 
     options: [
         {
@@ -114,4 +117,4 @@ module.exports = {
             }
         }
     },
-};
+} as UMCommand;

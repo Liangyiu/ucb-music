@@ -9,6 +9,8 @@ module.exports = {
 
     cooldown: 10,
 
+    userOnly: true,
+
     options: [
         {
             name: 'query',
