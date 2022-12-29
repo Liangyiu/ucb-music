@@ -147,6 +147,19 @@ module.exports = {
                 },
             ],
         },
+        {
+            name: 'stealthmode',
+            description: 'Enable/Disable stealth mode',
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+                {
+                    name: 'action',
+                    description: boolDesc,
+                    type: ApplicationCommandOptionType.Boolean,
+                    required: true,
+                },
+            ],
+        },
     ],
 
     async execute(interaction: CommandInteraction, client: UMClient) {
@@ -289,6 +302,15 @@ module.exports = {
                     ephemeral: true,
                     content: `✅ Set the default volume to \`${volume}%\`.`,
                 });
+            }
+            case 'stealthmode': {
+                await utility.setStealthMode(guild?.id || '', action || false);
+                serverSettings.stealthMode = action || false;
+
+                return await interaction.reply({
+                    ephemeral: true,
+                    content: `✅ Stealth mode has been ${action ? `\`enabled\`` : `\`disabled\``}.`
+                })
             }
         }
     },

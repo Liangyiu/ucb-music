@@ -78,27 +78,29 @@ module.exports = {
                 });
         }
 
-        let msg = undefined as any;
-        if (serverSettings.buttonControls) {
-            msg = await textChannel?.send({
-                embeds: [cpEmbed],
-                // @ts-ignore
-                components: [buttonrow],
-            });
-        } else {
-            msg = await textChannel?.send({
-                embeds: [cpEmbed],
+        if (!serverSettings.stealthMode) {
+            let msg = undefined as any;
+            if (serverSettings.buttonControls) {
+                msg = await textChannel?.send({
+                    embeds: [cpEmbed],
+                    // @ts-ignore
+                    components: [buttonrow],
+                });
+            } else {
+                msg = await textChannel?.send({
+                    embeds: [cpEmbed],
+                });
+            }
+
+            await queue.textChannel?.messages.fetch().then(messages => {
+                messages.forEach(message => {
+                    if (message.author.id === queue.distube.client.application?.id && message.id !== msg?.id) {
+                        try {
+                            message.delete();
+                        } catch (error) {}
+                    }
+                });
             });
         }
-
-        await queue.textChannel?.messages.fetch().then(messages => {
-            messages.forEach(message => {
-                if (message.author.id === queue.distube.client.application?.id && message.id !== msg?.id) {
-                    try {
-                        message.delete();
-                    } catch (error) {}
-                }
-            });
-        });
     },
 };

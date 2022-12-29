@@ -1,16 +1,17 @@
 import { EmbedBuilder } from 'discord.js';
 import { Playlist, Queue, Song } from 'distube';
+import UMServerSettings from '../../interfaces/UMServerSettings';
+import utility from '../../utility/utility';
 
 module.exports = {
     name: 'addList',
     distube: true,
 
-
     async execute(queue: Queue, playlist: Playlist) {
-        const song = queue.songs[0] as Song;
-        
-        await queue.textChannel?.send(
-            {
+        const serverSettings = (await utility.getServerSettings(queue.id)) as UMServerSettings;
+
+        if (!serverSettings.stealthMode) {
+            await queue.textChannel?.send({
                 embeds: [
                     new EmbedBuilder()
                         .setColor('#43ac34')
@@ -18,15 +19,22 @@ module.exports = {
                         .setDescription(`\`${playlist.name}\``)
                         .addFields(
                             {
-                                name: 'Duration', value: `\`${playlist.formattedDuration}\``, inline: true
+                                name: 'Duration',
+                                value: `\`${playlist.formattedDuration}\``,
+                                inline: true,
                             },
                             {
-                                name: 'Queue-Length', value: `${queue.songs.length} songs - \`${queue.formattedDuration}\``, inline: true
-                            }
+                                name: 'Queue-Length',
+                                value: `${queue.songs.length} songs - \`${queue.formattedDuration}\``,
+                                inline: true,
+                            },
                         )
-                        .setFooter({ text: `Requested by ${playlist.user?.username}`, iconURL: playlist.user?.displayAvatarURL() })
-                ]
-            }
-        )
-    }
-}
+                        .setFooter({
+                            text: `Requested by ${playlist.user?.username}`,
+                            iconURL: playlist.user?.displayAvatarURL(),
+                        }),
+                ],
+            });
+        }
+    },
+};
