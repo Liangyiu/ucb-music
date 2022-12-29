@@ -311,7 +311,7 @@ export default {
     },
 
     async hasAdminPerms(adminRoleId: string, member: GuildMember) {
-        if (!(member.permissions.has(PermissionsBitField.Flags.Administrator))) {
+        if (!(member.permissions.has(PermissionsBitField.Flags.Administrator))) { // inbuild discord admin role
             if (adminRoleId !== 'null') {
                 if (!(member.roles.cache.has(adminRoleId))) {
                     return false;

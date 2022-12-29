@@ -2,11 +2,13 @@ import {
     ApplicationCommandOptionType,
     CommandInteraction,
     CommandInteractionOptionResolver,
+    PermissionsBitField,
 } from 'discord.js';
 import utility from '../../utility/utility';
 import UMCommand from '../../interfaces/UMCommand';
 import UMClient from '../../interfaces/UMClient';
 import UMServerSettings from '../../interfaces/UMServerSettings';
+const boolDesc = 'Specify if you want to enable/disable this option';
 
 module.exports = {
     name: 'settings',
@@ -15,6 +17,7 @@ module.exports = {
 
     cooldown: 20,
 
+    permissions: [PermissionsBitField.Flags.Administrator],
     adminOnly: true,
 
     options: [
@@ -62,6 +65,19 @@ module.exports = {
             description: 'Reset the server settings to default',
             type: ApplicationCommandOptionType.Subcommand,
         },
+        {
+            name: 'buttoncontrols',
+            description: 'Enable/Disable button controls',
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+                {
+                    name: 'action',
+                    description: boolDesc,
+                    type: ApplicationCommandOptionType.Boolean,
+                    required: true,
+                }
+            ]
+        },
     ],
 
     async execute(interaction: CommandInteraction, client: UMClient) {
@@ -72,6 +88,7 @@ module.exports = {
 
         const cmd = options.getSubcommand();
         const role = options.getRole('role');
+        const action = options.getBoolean('action');
 
         switch (cmd) {
             case 'reset': {
@@ -109,6 +126,15 @@ module.exports = {
                     ephemeral: true,
                     content: `✅ User role has been set to ${role}.`,
                 });
+            }
+            case 'buttoncontrols': {
+                await utility.setButtonControls(guild?.id || '', action || false);
+                serverSettings.buttonControls = action || false;
+
+                return await interaction.reply({
+                    ephemeral: true,
+                    content: `✅ Button controls have been ${action ? `\`enabled\`` : `\`disabled\``}.`
+                })
             }
         }
     },
