@@ -61,6 +61,13 @@ module.exports = {
 
         const queue = await client.distube.getQueue(voicechannel);
 
+        if (queue?.songs.length === serverSettings.queueLimit || (queue?.songs.length || 0) > serverSettings.queueLimit) {
+            return await interaction.reply({
+                ephemeral: true,
+                content: `⛔ Not added to queue. Queue length limit of \`${serverSettings.queueLimit} songs\` is already reached.`
+            })
+        }
+
         if (!hasDjPerms) {
             if (!await utility.userCanAddSong(serverSettings, user.id, queue?.songs || [])) {
                 return await interaction.reply({

@@ -173,6 +173,19 @@ module.exports = {
                 }
             ]
         },
+        {
+            name: 'queuelimit',
+            description: 'Set the maximum amount of songs that can be in a queue',
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+                {
+                    name: 'amount',
+                    description: 'Specify the amount - 0 to reset',
+                    type: ApplicationCommandOptionType.Number,
+                    required: true,
+                }
+            ]
+        },
     ],
 
     async execute(interaction: CommandInteraction, client: UMClient) {
@@ -340,6 +353,22 @@ module.exports = {
                 return await interaction.reply({
                     ephemeral: true,
                     content: `✅ Song limit has been set to \`${limit}\` songs per user.`
+                })
+            }
+            case 'queuelimit' : {
+                if (limit < 0 || limit > 420) {
+                    return await interaction.reply({
+                        ephemeral: true,
+                        content: '⛔ Please specify a value between 1 and 420, or 0 if you wish to reset the queue limit.'
+                    })
+                }
+
+                await utility.setQueueLimit(guild?.id || '', limit);
+                serverSettings.queueLimit = limit;
+
+                return await interaction.reply({
+                    ephemeral: true,
+                    content: `✅ Queue-Length has been limited to \`${limit}\` songs.`
                 })
             }
         }
