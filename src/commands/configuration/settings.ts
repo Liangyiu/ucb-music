@@ -160,6 +160,19 @@ module.exports = {
                 },
             ],
         },
+        {
+            name: 'songlimit',
+            description: 'Set the maximum amount of songs a user can have queued',
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+                {
+                    name: 'amount',
+                    description: 'Specify the amount - 0 to reset',
+                    type: ApplicationCommandOptionType.Number,
+                    required: true,
+                }
+            ]
+        },
     ],
 
     async execute(interaction: CommandInteraction, client: UMClient) {
@@ -175,6 +188,7 @@ module.exports = {
         const musicChannel = options.getChannel('channel') as GuildTextBasedChannel;
         const volume = options.getNumber('percentage') || 50;
         const loopMode = options.getString('loopmode');
+        const limit = options.getNumber('amount') || 0;
 
         switch (cmd) {
             case 'reset': {
@@ -310,6 +324,22 @@ module.exports = {
                 return await interaction.reply({
                     ephemeral: true,
                     content: `✅ Stealth mode has been ${action ? `\`enabled\`` : `\`disabled\``}.`
+                })
+            }
+            case 'songlimit': {
+                if (limit < 0) {
+                    return await interaction.reply({
+                        ephemeral: true,
+                        content: '⛔ Please specify a value greater than 0 or 0 if you wish to reset the song limit.'
+                    })
+                }
+
+                await utility.setSongLimit(guild?.id || '', limit);
+                serverSettings.songsPerUserLimit = limit;                
+
+                return await interaction.reply({
+                    ephemeral: true,
+                    content: `✅ Song limit has been set to \`${limit}\` songs per user.`
                 })
             }
         }

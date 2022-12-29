@@ -3,6 +3,7 @@ import commandsUsedSchema from '../schemas/commandsUsed';
 import serverSettingsSchema from '../schemas/serverSettings';
 import UMServerSettings from '../interfaces/UMServerSettings';
 import { GuildMember, PermissionsBitField } from 'discord.js';
+import { Song } from 'distube';
 
 export default {
     async playedSong(songTitle: string, songUrl: string, guildId: string) {
@@ -369,5 +370,22 @@ export default {
         }
 
         return true;
+    },
+
+    async userCanAddSong(serverSettings: UMServerSettings, userId: string, songs: Song[]) {
+        const songLimit = serverSettings.songsPerUserLimit;
+
+        if (songLimit === 0) return true;
+        else {
+            const userSongs = await songs.map(song => {
+                if (song.user?.id === userId) return true;
+            })
+
+            if (userSongs.length < songLimit) {
+                return true;
+            } else {
+                return false;
+            }
+        }
     },
 };

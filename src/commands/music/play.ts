@@ -1,6 +1,8 @@
 import { CommandInteraction, GuildMember, ApplicationCommandOptionType, CommandInteractionOptionResolver, PermissionsBitField, GuildTextBasedChannel } from 'discord.js';
 import UMClient from '../../interfaces/UMClient';
 import UMCommand from '../../interfaces/UMCommand';
+import UMServerSettings from '../../interfaces/UMServerSettings';
+import utility from '../../utility/utility';
 
 module.exports = {
     name: 'play',
@@ -26,7 +28,10 @@ module.exports = {
         const options = interaction.options as CommandInteractionOptionResolver;
 
         const channel = interaction.channel as GuildTextBasedChannel;
-        const voicechannel = member.voice.channel;
+        const voicechannel = member.voice.channel;        
+
+        const serverSettings = client.serverSettings.get(guild?.id || '') as UMServerSettings;
+        const hasDjPerms = await utility.hasDjPerms(serverSettings, member);
 
         if (!voicechannel) {
             return await interaction.reply({
@@ -55,6 +60,15 @@ module.exports = {
         }
 
         const queue = await client.distube.getQueue(voicechannel);
+
+        if (!hasDjPerms) {
+            if (!await utility.userCanAddSong(serverSettings, user.id, queue?.songs || [])) {
+                return await interaction.reply({
+                    ephemeral: true,
+                    content: `⛔ You can not add more songs to the queue.\nYou have reached the server set maximum of songs in the queue by one user.\n\`max songs per user = ${serverSettings.songsPerUserLimit}\``
+                })
+            }
+        }
 
         await interaction.reply({
             ephemeral: true,
