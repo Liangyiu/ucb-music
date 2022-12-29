@@ -77,8 +77,8 @@ module.exports = {
                     description: boolDesc,
                     type: ApplicationCommandOptionType.Boolean,
                     required: true,
-                }
-            ]
+                },
+            ],
         },
         {
             name: 'musicchannel',
@@ -90,11 +90,62 @@ module.exports = {
                     description: 'Specify which channel you want to be the music channel',
                     type: ApplicationCommandOptionType.Channel,
                     required: true,
-                    channel_types: [
-                        ChannelType.GuildText
-                    ]
-                }
-            ]
+                    channel_types: [ChannelType.GuildText],
+                },
+            ],
+        },
+        {
+            name: 'loop',
+            description: 'Choose a loop mode',
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+                {
+                    name: 'loopmode',
+                    description: 'Specify your desired loop mode',
+                    type: ApplicationCommandOptionType.String,
+                    required: true,
+                    choices: [
+                        {
+                            name: 'Disable',
+                            value: 'disable',
+                        },
+                        {
+                            name: 'Queue',
+                            value: 'queue',
+                        },
+                        {
+                            name: 'Song',
+                            value: 'song',
+                        },
+                    ],
+                },
+            ],
+        },
+        {
+            name: 'autoplay',
+            description: 'Enable/Disable autoplay',
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+                {
+                    name: 'action',
+                    description: boolDesc,
+                    type: ApplicationCommandOptionType.Boolean,
+                    required: true,
+                },
+            ],
+        },
+        {
+            name: 'defaultvolume',
+            description: 'Set the default volume',
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+                {
+                    name: 'percentage',
+                    description: '10 = 10%',
+                    type: ApplicationCommandOptionType.Number,
+                    required: true,
+                },
+            ],
         },
     ],
 
@@ -109,6 +160,8 @@ module.exports = {
         const role = options.getRole('role');
         const action = options.getBoolean('action');
         const musicChannel = options.getChannel('channel') as GuildTextBasedChannel;
+        const volume = options.getNumber('percentage') || 50;
+        const loopMode = options.getString('loopmode');
 
         switch (cmd) {
             case 'reset': {
@@ -153,21 +206,24 @@ module.exports = {
 
                 return await interaction.reply({
                     ephemeral: true,
-                    content: `✅ Button controls have been ${action ? `\`enabled\`` : `\`disabled\``}.`
-                })
+                    content: `✅ Button controls have been ${action ? `\`enabled\`` : `\`disabled\``}.`,
+                });
             }
             case 'musicchannel': {
-                const permsInChannel = await musicChannel.permissionsFor(me?.id || '', true)
+                const permsInChannel = await musicChannel.permissionsFor(me?.id || '', true);
 
-                if (!permsInChannel?.has([
-                    PermissionsBitField.Flags.ReadMessageHistory,
-                    PermissionsBitField.Flags.SendMessages,
-                    PermissionsBitField.Flags.ViewChannel
-                ])) {
+                if (
+                    !permsInChannel?.has([
+                        PermissionsBitField.Flags.ReadMessageHistory,
+                        PermissionsBitField.Flags.SendMessages,
+                        PermissionsBitField.Flags.ViewChannel,
+                    ])
+                ) {
                     return await interaction.reply({
                         ephemeral: true,
-                        content: '⛔ Did not set music channel.\nReason: \`I need the permission to view the specified channel, read its message history and send messages into it.\`'
-                    })
+                        content:
+                            '⛔ Did not set music channel.\nReason: `I need the permission to view the specified channel, read its message history and send messages into it.`',
+                    });
                 }
 
                 await utility.setMusicChannelId(guild?.id || '', musicChannel.id);
@@ -175,8 +231,64 @@ module.exports = {
 
                 return await interaction.reply({
                     ephemeral: true,
-                    content: `✅ Music channel has been set to ${musicChannel}.`
-                })
+                    content: `✅ Music channel has been set to ${musicChannel}.`,
+                });
+            }
+            case 'autoplay': {
+                await utility.setAutoplay(guild?.id || '', action || false);
+                serverSettings.autoplay = action || false;
+
+                return await interaction.reply({
+                    ephemeral: true,
+                    content: `✅ Autoplay has been ${action ? `\`enabled\`` : `\`disabled\``}.`,
+                });
+            }
+            case 'loop': {
+                switch (loopMode) {
+                    case 'song': {
+                        await utility.setLoopMode(guild?.id || '', 1);
+                        serverSettings.loopMode = 1;
+
+                        return await interaction.reply({
+                            ephemeral: true,
+                            content: `✅ Looping-Mode switched to \`song\`.`,
+                        });
+                    }
+                    case 'queue': {
+                        await utility.setLoopMode(guild?.id || '', 2);
+                        serverSettings.loopMode = 2;
+
+                        return await interaction.reply({
+                            ephemeral: true,
+                            content: `✅ Looping-Mode switched to \`queue\`.`,
+                        });
+                    }
+                    case 'disable': {
+                        await utility.setLoopMode(guild?.id || '', 0);
+                        serverSettings.loopMode = 0;
+
+                        return await interaction.reply({
+                            ephemeral: true,
+                            content: `✅ Looping-Mode switched to \`disabled\`.`,
+                        });
+                    }
+                }
+            }
+            case 'defaultvolume': {
+                if (volume > 100 || volume < 1) {
+                    return await interaction.reply({
+                        ephemeral: true,
+                        content: 'You have to specify a number between 1 and 100.',
+                    });
+                }
+
+                await utility.setDefaultVolume(guild?.id || '', volume);
+                serverSettings.defaultVolume = volume;
+
+                return await interaction.reply({
+                    ephemeral: true,
+                    content: `✅ Set the default volume to \`${volume}%\`.`,
+                });
             }
         }
     },
