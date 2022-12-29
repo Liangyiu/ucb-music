@@ -39,6 +39,21 @@ module.exports = {
                 })
             }
 
+            if (command.category === 'music') {
+                const musicChannelId = serverSettings.musicChannelId;
+
+                if (musicChannelId !== 'null') {
+                    const musicChannel = await guild?.channels.cache.get(musicChannelId);
+
+                    if (!(channel?.id === musicChannelId)) {
+                        return await interaction.reply({
+                            ephemeral: true,
+                            content: `⛔ Please use the dedicated music-channel ${musicChannel}.`
+                        })
+                    }
+                }
+            }
+
             if (command.permissions?.length > 0) {
                 if (!member?.permissions.has(command.permissions)) {
                     return await interaction.reply({

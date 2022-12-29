@@ -1,7 +1,9 @@
 import {
     ApplicationCommandOptionType,
+    ChannelType,
     CommandInteraction,
     CommandInteractionOptionResolver,
+    GuildTextBasedChannel,
     PermissionsBitField,
 } from 'discord.js';
 import utility from '../../utility/utility';
@@ -78,17 +80,35 @@ module.exports = {
                 }
             ]
         },
+        {
+            name: 'musicchannel',
+            description: 'Set a music channel',
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+                {
+                    name: 'channel',
+                    description: 'Specify which channel you want to be the music channel',
+                    type: ApplicationCommandOptionType.Channel,
+                    required: true,
+                    channel_types: [
+                        ChannelType.GuildText
+                    ]
+                }
+            ]
+        },
     ],
 
     async execute(interaction: CommandInteraction, client: UMClient) {
         const { guild } = interaction;
         const options = interaction.options as CommandInteractionOptionResolver;
+        const me = client.user;
 
         let serverSettings = client.serverSettings.get(guild?.id || '') as UMServerSettings;
 
         const cmd = options.getSubcommand();
         const role = options.getRole('role');
         const action = options.getBoolean('action');
+        const musicChannel = options.getChannel('channel') as GuildTextBasedChannel;
 
         switch (cmd) {
             case 'reset': {
@@ -134,6 +154,28 @@ module.exports = {
                 return await interaction.reply({
                     ephemeral: true,
                     content: `✅ Button controls have been ${action ? `\`enabled\`` : `\`disabled\``}.`
+                })
+            }
+            case 'musicchannel': {
+                const permsInChannel = await musicChannel.permissionsFor(me?.id || '', true)
+
+                if (!permsInChannel?.has([
+                    PermissionsBitField.Flags.ReadMessageHistory,
+                    PermissionsBitField.Flags.SendMessages,
+                    PermissionsBitField.Flags.ViewChannel
+                ])) {
+                    return await interaction.reply({
+                        ephemeral: true,
+                        content: '⛔ Did not set music channel.\nReason: \`I need the permission to view the specified channel, read its message history and send messages into it.\`'
+                    })
+                }
+
+                await utility.setMusicChannelId(guild?.id || '', musicChannel.id);
+                serverSettings.musicChannelId = musicChannel.id;
+
+                return await interaction.reply({
+                    ephemeral: true,
+                    content: `✅ Music channel has been set to ${musicChannel}.`
                 })
             }
         }
