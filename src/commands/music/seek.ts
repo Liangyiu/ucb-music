@@ -6,6 +6,7 @@ import {
 } from 'discord.js';
 import UMClient from '../../interfaces/UMClient';
 import UMCommand from '../../interfaces/UMCommand';
+import utility from '../../utility/utility';
 
 module.exports = {
     name: 'seek',
@@ -74,6 +75,12 @@ module.exports = {
         if (seekSeconds === queue.songs[0].duration) seekSeconds -= 1;
 
         await queue.seek(seekSeconds);
+
+        try {
+            await utility.updateNowPlaying(queue)
+        } catch (error) {
+
+        }
 
         return await interaction.reply({
             ephemeral: true,

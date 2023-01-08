@@ -90,6 +90,12 @@ module.exports = {
 
         await queue.songs.splice(index, 1);
 
+        try {
+            await utility.updateNowPlaying(queue)
+        } catch (error) {
+            
+        }
+
         interaction.reply({
             ephemeral: true,
             content: `✅ Successfully removed \`${song.name}\` from the queue.`,

@@ -170,8 +170,8 @@ module.exports = {
                     description: 'Specify the amount - 0 to reset',
                     type: ApplicationCommandOptionType.Number,
                     required: true,
-                }
-            ]
+                },
+            ],
         },
         {
             name: 'queuelimit',
@@ -183,8 +183,21 @@ module.exports = {
                     description: 'Specify the amount - 0 to reset',
                     type: ApplicationCommandOptionType.Number,
                     required: true,
-                }
-            ]
+                },
+            ],
+        },
+        {
+            name: 'spotifyfetching',
+            description: 'Enable/Disable spotify link and cover art fetching',
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+                {
+                    name: 'action',
+                    description: boolDesc,
+                    type: ApplicationCommandOptionType.Boolean,
+                    required: true,
+                },
+            ],
         },
     ],
 
@@ -336,31 +349,32 @@ module.exports = {
 
                 return await interaction.reply({
                     ephemeral: true,
-                    content: `✅ Stealth mode has been ${action ? `\`enabled\`` : `\`disabled\``}.`
-                })
+                    content: `✅ Stealth mode has been ${action ? `\`enabled\`` : `\`disabled\``}.`,
+                });
             }
             case 'songlimit': {
                 if (limit < 0) {
                     return await interaction.reply({
                         ephemeral: true,
-                        content: '⛔ Please specify a value greater than 0 or 0 if you wish to reset the song limit.'
-                    })
+                        content: '⛔ Please specify a value greater than 0 or 0 if you wish to reset the song limit.',
+                    });
                 }
 
                 await utility.setSongLimit(guild?.id || '', limit);
-                serverSettings.songsPerUserLimit = limit;                
+                serverSettings.songsPerUserLimit = limit;
 
                 return await interaction.reply({
                     ephemeral: true,
-                    content: `✅ Song limit has been set to \`${limit}\` songs per user.`
-                })
+                    content: `✅ Song limit has been set to \`${limit}\` songs per user.`,
+                });
             }
-            case 'queuelimit' : {
+            case 'queuelimit': {
                 if (limit < 0 || limit > 420) {
                     return await interaction.reply({
                         ephemeral: true,
-                        content: '⛔ Please specify a value between 1 and 420, or 0 if you wish to reset the queue limit.'
-                    })
+                        content:
+                            '⛔ Please specify a value between 1 and 420, or 0 if you wish to reset the queue limit.',
+                    });
                 }
 
                 await utility.setQueueLimit(guild?.id || '', limit);
@@ -368,8 +382,19 @@ module.exports = {
 
                 return await interaction.reply({
                     ephemeral: true,
-                    content: `✅ Queue-Length has been limited to \`${limit}\` songs.`
-                })
+                    content: `✅ Queue-Length has been limited to \`${limit}\` songs.`,
+                });
+            }
+            case 'spotifyfetching': {
+                await utility.setSpotifyFetching(guild?.id || '', action || false);
+                serverSettings.spotifyFetching = action || false;
+
+                return await interaction.reply({
+                    ephemeral: true,
+                    content: `✅ Spotify link and cover art fetching have been ${
+                        action ? `\`enabled\`` : `\`disabled\``
+                    }.`,
+                });
             }
         }
     },

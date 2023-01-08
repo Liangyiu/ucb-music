@@ -1,19 +1,18 @@
-import { CommandInteraction, GuildMember } from 'discord.js';
+import { CommandInteraction, Client, EmbedBuilder, GuildMember } from 'discord.js';
 import UMClient from '../../interfaces/UMClient';
-import UMCommand from '../../interfaces/UMCommand';
-import utility from '../../utility/utility';
+import UMSong from '../../interfaces/UMSong';
+const PBF = require('progress-bar-formatter');
 
 module.exports = {
-    name: 'shuffle',
-    description: 'Shuffles the current queue',
+    name: 'currentlyplaying',
+    description: 'Gives info about the currently playing song',
     category: 'music',
 
     cooldown: 10,
 
-    djOnly: true,
 
     async execute(interaction: CommandInteraction, client: UMClient) {
-        const { guild } = interaction;
+        const { guild, channel } = interaction;
         const member = interaction.member as GuildMember;
 
         const voicechannel = member.voice.channel;
@@ -41,17 +40,30 @@ module.exports = {
             });
         }
 
-        await queue.shuffle();
 
-        try {
-            await utility.updateNowPlaying(queue)
-        } catch (error) {
+        const song = queue.songs[0] as UMSong;
 
-        }
+        const bar = new PBF({
+            complete: '▰',
+            incomplete: '▱',
+            length: 15
+        })
+
+        const embed = new EmbedBuilder()
+            .setColor('#43ac34')
+            .setTitle(`<:ucb:1044983268686168065> \`${song.name}\``)
+            .addFields(
+                { name: 'Links', value: `[<:youtube:938131469019283507>](${song.url})`, inline: true },
+                { name: 'Duration', value: `\`${song.formattedDuration}\``, inline: true },
+                { name: 'Progress', value: `\`${queue.formattedCurrentTime} ${bar.format(queue.currentTime / song.duration)} ${song.formattedDuration}\``, inline: false },
+            )
+            .setThumbnail(song.thumbnail || '')
 
         return await interaction.reply({
             ephemeral: true,
-            content: 'The queue has been shuffled.',
+            embeds: [
+                embed,
+            ],
         });
-    },
-} as UMCommand;
+    }
+}

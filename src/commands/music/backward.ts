@@ -1,6 +1,7 @@
 import { CommandInteraction, Client, Permissions, ApplicationCommandOptionType, GuildMember, CommandInteractionOptionResolver } from 'discord.js';
 import UMClient from '../../interfaces/UMClient';
 import UMCommand from '../../interfaces/UMCommand';
+import utility from '../../utility/utility';
 
 module.exports = {
     name: 'backward',
@@ -61,6 +62,12 @@ module.exports = {
 
         if ((queue.currentTime - seekSeconds) <= 0) {
             await queue.seek(0);
+
+            try {
+                await utility.updateNowPlaying(queue)
+            } catch (error) {
+    
+            }
           
             return await interaction.reply({
                 ephemeral: true,
@@ -69,6 +76,12 @@ module.exports = {
         }
 
         await queue.seek((queue.currentTime - seekSeconds));
+
+        try {
+            await utility.updateNowPlaying(queue)
+        } catch (error) {
+
+        }
 
         return await interaction.reply({
             ephemeral: true,

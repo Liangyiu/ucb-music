@@ -1,6 +1,7 @@
 import { CommandInteraction, GuildMember } from 'discord.js';
 import UMClient from '../../interfaces/UMClient';
 import UMCommand from '../../interfaces/UMCommand';
+import utility from '../../utility/utility';
 
 module.exports = {
     name: 'clear',
@@ -50,6 +51,12 @@ module.exports = {
         const oldQueueLength = queue.songs.length - 1;
 
         await queue.songs.splice(1);
+
+        try {
+            await utility.updateNowPlaying(queue)
+        } catch (error) {
+
+        }
 
         return await interaction.reply({
             ephemeral: true,

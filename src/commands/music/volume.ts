@@ -6,6 +6,7 @@ import {
 } from 'discord.js';
 import UMClient from '../../interfaces/UMClient';
 import UMCommand from '../../interfaces/UMCommand';
+import utility from '../../utility/utility';
 
 module.exports = {
     name: 'volume',
@@ -65,6 +66,12 @@ module.exports = {
         }
 
         queue.setVolume(volume);
+
+        try {
+            await utility.updateNowPlaying(queue)
+        } catch (error) {
+
+        }
 
         return await interaction.reply({
             ephemeral: true,

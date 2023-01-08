@@ -6,6 +6,7 @@ import {
 } from 'discord.js';
 import UMClient from '../../interfaces/UMClient';
 import UMCommand from '../../interfaces/UMCommand';
+import utility from '../../utility/utility';
 
 module.exports = {
     name: 'loop',
@@ -80,6 +81,12 @@ module.exports = {
 
                 queue.setRepeatMode(1);
 
+                try {
+                    await utility.updateNowPlaying(queue)
+                } catch (error) {
+
+                }
+
                 return await interaction.reply({
                     ephemeral: true,
                     content: `✅ Looping-Mode switched to \`song\`.`,
@@ -95,6 +102,12 @@ module.exports = {
 
                 queue.setRepeatMode(2);
 
+                try {
+                    await utility.updateNowPlaying(queue)
+                } catch (error) {
+
+                }
+
                 return await interaction.reply({
                     ephemeral: true,
                     content: `✅ Looping-Mode switched to \`queue\`.`,
@@ -109,6 +122,12 @@ module.exports = {
                 }
 
                 queue.setRepeatMode(0);
+
+                try {
+                    await utility.updateNowPlaying(queue)
+                } catch (error) {
+
+                }
 
                 return await interaction.reply({
                     ephemeral: true,

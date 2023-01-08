@@ -1,6 +1,7 @@
 import { CommandInteraction, GuildMember } from 'discord.js';
 import UMClient from '../../interfaces/UMClient';
 import UMCommand from '../../interfaces/UMCommand';
+import utility from '../../utility/utility';
 
 module.exports = {
     name: 'autoplay',
@@ -41,6 +42,12 @@ module.exports = {
         }
 
         const autoplayState = await queue.toggleAutoplay();
+
+        try {
+            await utility.updateNowPlaying(queue)
+        } catch (error) {
+
+        }
 
         if (autoplayState) {
             return await interaction.reply({

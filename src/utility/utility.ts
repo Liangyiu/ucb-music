@@ -3,7 +3,10 @@ import commandsUsedSchema from '../schemas/commandsUsed';
 import serverSettingsSchema from '../schemas/serverSettings';
 import UMServerSettings from '../interfaces/UMServerSettings';
 import { GuildMember, PermissionsBitField } from 'discord.js';
-import { Song } from 'distube';
+import { Queue, Song } from 'distube';
+import ytSpLinks from '../schemas/ytSpLinks';
+import UMSong from '../interfaces/UMSong';
+const PBF = require('progress-bar-formatter');
 
 export default {
     async playedSong(songTitle: string, songUrl: string, guildId: string) {
@@ -301,20 +304,23 @@ export default {
     },
 
     async getDjRoleId(guildId: string) {
-        const res = await serverSettingsSchema.findOne({
-            _id: guildId
-        }).select({
-            'djRoleId': 1,
-            '_id': 0
-        })
+        const res = await serverSettingsSchema
+            .findOne({
+                _id: guildId,
+            })
+            .select({
+                djRoleId: 1,
+                _id: 0,
+            });
 
         return res.djRoleId;
     },
 
     async hasAdminPerms(adminRoleId: string, member: GuildMember) {
-        if (!(member.permissions.has(PermissionsBitField.Flags.Administrator))) { // inbuild discord admin role
+        if (!member.permissions.has(PermissionsBitField.Flags.Administrator)) {
+            // inbuild discord admin role
             if (adminRoleId !== 'null') {
-                if (!(member.roles.cache.has(adminRoleId))) {
+                if (!member.roles.cache.has(adminRoleId)) {
                     return false;
                 }
             } else {
@@ -326,18 +332,18 @@ export default {
     },
 
     async hasDjPerms(serverSettings: UMServerSettings, member: GuildMember) {
-        if (!(member.permissions.has(PermissionsBitField.Flags.Administrator))) {
+        if (!member.permissions.has(PermissionsBitField.Flags.Administrator)) {
             const adminRoleId = serverSettings.adminRoleId;
             const djRoleId = serverSettings.djRoleId;
 
             if (adminRoleId !== 'null') {
-                if (!(member.roles.cache.has(adminRoleId))) {
-                    if (!(member.roles.cache.has(djRoleId))) {
+                if (!member.roles.cache.has(adminRoleId)) {
+                    if (!member.roles.cache.has(djRoleId)) {
                         return false;
                     }
                 }
             } else {
-                if (!(member.roles.cache.has(djRoleId))) {
+                if (!member.roles.cache.has(djRoleId)) {
                     return false;
                 }
             }
@@ -347,22 +353,22 @@ export default {
     },
 
     async hasUserPerms(serverSettings: UMServerSettings, member: GuildMember) {
-        if (!(member.permissions.has(PermissionsBitField.Flags.Administrator))) {
+        if (!member.permissions.has(PermissionsBitField.Flags.Administrator)) {
             const adminRoleId = serverSettings.adminRoleId;
             const djRoleId = serverSettings.djRoleId;
             const userRoleId = serverSettings.userRoleId;
 
             if (adminRoleId !== 'null') {
-                if (!(member.roles.cache.has(adminRoleId))) {
-                    if (!(member.roles.cache.has(djRoleId))) {
-                        if (!(member.roles.cache.has(userRoleId))) {
+                if (!member.roles.cache.has(adminRoleId)) {
+                    if (!member.roles.cache.has(djRoleId)) {
+                        if (!member.roles.cache.has(userRoleId)) {
                             return false;
                         }
                     }
                 }
             } else {
-                if (!(member.roles.cache.has(djRoleId))) {
-                    if (!(member.roles.cache.has(userRoleId))) {
+                if (!member.roles.cache.has(djRoleId)) {
+                    if (!member.roles.cache.has(userRoleId)) {
                         return false;
                     }
                 }
@@ -379,7 +385,7 @@ export default {
         else {
             const userSongs = await songs.map(song => {
                 if (song.user?.id === userId) return true;
-            })
+            });
 
             if (userSongs.length < songLimit) {
                 return true;
@@ -387,5 +393,93 @@ export default {
                 return false;
             }
         }
+    },
+
+    async getSpotifyLink(ytLink: string) {
+        const res = await ytSpLinks.findOne({
+            _id: ytLink,
+        });
+
+        if (res) {
+            return res.spotifyLink;
+        }
+
+        return undefined;
+    },
+
+    async setSpotifyLink(ytLink: string, spotifyLink: string) {
+        return await ytSpLinks.findOneAndUpdate(
+            {
+                _id: ytLink,
+            },
+            {
+                spotifyLink: spotifyLink,
+            },
+            {
+                upsert: true,
+            },
+        );
+    },
+
+    async updateNowPlaying(queue: Queue) {
+        const song = queue.songs[0] as UMSong;
+        const message = song?.metadata.cpMessage;
+
+        const status = (queue: Queue) =>
+            `Volume: \`${queue.volume}%\` | Filter: \`${queue.filters.names.join(', ') || 'Off'}\` | Loop: \`${
+                queue.repeatMode ? (queue.repeatMode === 2 ? 'Queue' : 'Song') : 'Off'
+            }\` | Autoplay: \`${queue.autoplay ? 'On' : 'Off'}\``;
+
+        let qStatus = status(queue);
+        const qLength = `\`${
+            queue.songs.length === 1 ? `${queue.songs.length}\` song` : `${queue.songs.length}\` songs`
+        } - \`${queue.formattedDuration}\``;
+
+        const embed = message.embeds[0];
+
+        let qStatusField;
+        let qLengthField;
+
+        if (song.isLive) {
+            qStatusField = embed.fields[3];
+            qLengthField = embed.fields[2];
+        } else {
+            const progressBar = new PBF({
+                complete: '▰',
+                incomplete: '▱',
+                length: 15,
+            });
+
+            const progressBarField = embed.fields[2];
+            progressBarField.value = `\`${queue.formattedCurrentTime} ${progressBar.format(
+                queue.currentTime / song.duration,
+            )} ${song.formattedDuration}\``;
+
+            qStatusField = embed.fields[4];
+            qLengthField = embed.fields[3];
+        }
+
+        let spotifyURL;
+
+        if (song.metadata.spotifyLink) {
+            spotifyURL = song.metadata.spotifyLink;
+        } else if (song.url.includes('youtube') && !song.isLive) {
+            spotifyURL = await this.getSpotifyLink(song.url);
+        }
+
+        if (!song.isLive && !song.url.includes('soundcloud') && !spotifyURL) {
+            qStatus = qStatus;
+        }
+
+        qLengthField.value = qLength;
+        qStatusField.value = qStatus;
+
+        if (message) {
+            await message.edit({
+                embeds: [embed],
+            });
+        }
+
+        return;
     },
 };

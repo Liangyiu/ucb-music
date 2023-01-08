@@ -11,6 +11,12 @@ module.exports = {
         const serverSettings = (await utility.getServerSettings(queue.id)) as UMServerSettings;
 
         if (!serverSettings.stealthMode) {
+            try {
+                await utility.updateNowPlaying(queue)
+            } catch (error) {
+
+            }
+
             await queue.textChannel?.send({
                 embeds: [
                     new EmbedBuilder()
